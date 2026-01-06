@@ -7,8 +7,58 @@ body {
   height: 100%;
 }
 
+:root {
+  --app-bg: 210 30% 98%;
+  --app-surface: 0 0% 100%;
+  --app-surface-2: 210 30% 96%;
+  --app-border: 215 20% 86%;
+  --app-text: 215 25% 14%;
+  --app-muted: 215 12% 45%;
+
+  --brand-50: 160 45% 96%;
+  --brand-100: 160 45% 90%;
+  --brand-200: 160 45% 80%;
+  --brand-300: 160 55% 70%;
+  --brand-400: 160 65% 55%;
+  --brand-500: 160 70% 45%;
+  --brand-600: 160 70% 38%;
+  --brand-700: 160 75% 30%;
+}
+
+.dark {
+  --app-bg: 210 18% 10%;
+  --app-surface: 210 16% 13%;
+  --app-surface-2: 210 16% 16%;
+  --app-border: 210 16% 20%;
+  --app-text: 210 20% 96%;
+  --app-muted: 210 12% 70%;
+
+  --brand-50: 160 35% 12%;
+  --brand-100: 160 40% 16%;
+  --brand-200: 160 45% 22%;
+  --brand-300: 160 50% 28%;
+  --brand-400: 160 60% 38%;
+  --brand-500: 160 65% 48%;
+  --brand-600: 160 70% 58%;
+  --brand-700: 160 75% 68%;
+}
+
 body {
   margin: 0;
   font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
     Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  background: hsl(var(--app-bg));
+  color: hsl(var(--app-text));
+}
+
+.titlebar {
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.no-drag,
+.titlebar button,
+.titlebar a,
+.titlebar input {
+  -webkit-app-region: no-drag;
 }

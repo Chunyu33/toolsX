@@ -1,8 +1,22 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, protocol } from 'electron'
 import { createMainWindow } from './windows/mainWindow'
 import { registerIpcHandlers } from './ipc'
+import { registerLocalfileProtocol } from './protocols/localfile'
 
 let mainWindow: BrowserWindow | null = null
+
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'localfile',
+    privileges: {
+      standard: true,
+      secure: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      stream: true
+    }
+  }
+])
 
 const gotTheLock = app.requestSingleInstanceLock()
 if (!gotTheLock) {
@@ -28,5 +42,6 @@ app.on('activate', async () => {
 
 app.whenReady().then(async () => {
   registerIpcHandlers()
+  registerLocalfileProtocol()
   mainWindow = await createMainWindow()
 })

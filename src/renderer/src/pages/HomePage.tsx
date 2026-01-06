@@ -19,15 +19,15 @@ export default function HomePage() {
   }, [query])
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-app-bg">
       <Header title="工具列表" onSearchChange={setQuery} />
 
       <div className="mx-auto max-w-5xl px-6 py-6">
-        <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
-          <div className="font-medium text-slate-900">IPC 测试</div>
+        <div className="rounded-xl border border-app-border bg-app-surface p-4 text-sm text-app-text shadow-sm">
+          <div className="font-medium">IPC 测试</div>
           <div className="mt-2 flex items-center gap-2">
             <button
-              className="rounded-lg bg-slate-900 px-3 py-2 text-white hover:bg-slate-800"
+              className="rounded-lg bg-brand-600 px-3 py-2 text-white hover:bg-brand-700"
               onClick={async () => {
                 const msg = await window.toolsx.system.ping()
                 alert(msg)
@@ -35,7 +35,7 @@ export default function HomePage() {
             >
               Ping 主进程
             </button>
-            <div className="text-slate-500">通过 preload 暴露的安全 API 调用</div>
+            <div className="text-app-muted">通过 preload 暴露的安全 API 调用</div>
           </div>
         </div>
 
@@ -44,13 +44,13 @@ export default function HomePage() {
             <Link
               key={t.id}
               to={t.route}
-              className="group rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-[1px] hover:border-slate-300 hover:shadow"
+              className="group rounded-xl border border-app-border bg-app-surface p-5 shadow-sm transition hover:-translate-y-[1px] hover:border-brand-300 hover:shadow"
             >
-              <div className="text-base font-semibold text-slate-900 group-hover:text-slate-950">
+              <div className="text-base font-semibold text-app-text">
                 {t.title}
               </div>
-              <div className="mt-2 text-sm leading-relaxed text-slate-600">{t.description}</div>
-              <div className="mt-4 text-xs font-medium text-slate-500">点击进入</div>
+              <div className="mt-2 text-sm leading-relaxed text-app-muted">{t.description}</div>
+              <div className="mt-4 text-xs font-medium text-brand-600">点击进入</div>
             </Link>
           ))}
         </div>

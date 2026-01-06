@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import { Info, Search } from 'lucide-react'
-import * as Dialog from '@radix-ui/react-dialog'
+import { ChevronLeft, Maximize2, Minus, Search, X } from 'lucide-react'
+import SettingsModal from './SettingsModal'
 
 type Props = {
   title: string
@@ -12,69 +12,90 @@ type Props = {
 export default function Header({ title, onSearchChange }: Props) {
   const location = useLocation()
   const [search, setSearch] = useState('')
+  const [isMax, setIsMax] = useState(false)
 
   const showBack = useMemo(() => location.pathname !== '/', [location.pathname])
 
+  useEffect(() => {
+    let cancelled = false
+
+    window.toolsx.windowControls
+      .isMaximized()
+      .then((v) => {
+        if (!cancelled) setIsMax(v)
+      })
+      .catch(() => undefined)
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
-    <div className="sticky top-0 z-10 border-b border-slate-200 bg-white/80 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
+    <div className="sticky top-0 z-20 border-b border-app-border bg-app-surface/80 backdrop-blur">
+      <div className="titlebar flex h-12 items-stretch">
+        <div className="flex items-center gap-2 pl-3 pr-2">
+          <div className="h-7 w-7 rounded-lg bg-brand-500/20 ring-1 ring-brand-300/40" />
+          <div className="text-sm font-semibold tracking-wide text-app-text">ToolsX</div>
+        </div>
+
         {showBack ? (
           <Link
             to="/"
-            className="rounded-md px-2 py-1 text-sm font-medium text-slate-700 hover:bg-slate-100"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-app-border bg-app-surface text-app-text hover:bg-app-surface2"
+            title="返回"
           >
-            返回
+            <ChevronLeft className="h-4 w-4" />
           </Link>
-        ) : (
-          <div className="w-[44px]" />
-        )}
+        ) : null}
 
-        <div className="flex-1">
-          <div className="text-lg font-semibold text-slate-900">{title}</div>
-          <div className="text-xs text-slate-500">ToolsX · 全能工具箱</div>
+        <div className="flex-1" title={title} />
+
+        <div className="flex items-center gap-2 px-2">
+          <div className="relative hidden w-[320px] sm:block">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-app-muted" />
+            <input
+              value={search}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                const v = e.currentTarget.value
+                setSearch(v)
+                onSearchChange?.(v)
+              }}
+              placeholder="搜索工具..."
+              className="w-full rounded-lg border border-app-border bg-app-surface2 px-9 py-2 text-sm text-app-text outline-none focus:border-brand-300"
+            />
+          </div>
+
+          <SettingsModal />
         </div>
 
-        <div className="relative hidden w-[320px] sm:block">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-          <input
-            value={search}
-            onChange={(e: ChangeEvent<HTMLInputElement>) => {
-              const v = e.currentTarget.value
-              setSearch(v)
-              onSearchChange?.(v)
+        <div className="flex w-[150px] items-stretch justify-end">
+          <button
+            className="flex w-12 items-center justify-center text-app-muted hover:bg-app-surface2 hover:text-app-text"
+            onClick={() => window.toolsx.windowControls.minimize()}
+            title="最小化"
+          >
+            <Minus className="h-4 w-4" />
+          </button>
+          <button
+            className="flex w-12 items-center justify-center text-app-muted hover:bg-app-surface2 hover:text-app-text"
+            onClick={async () => {
+              await window.toolsx.windowControls.toggleMaximize()
+              const v = await window.toolsx.windowControls.isMaximized()
+              setIsMax(v)
             }}
-            placeholder="搜索工具..."
-            className="w-full rounded-lg border border-slate-200 bg-white px-9 py-2 text-sm outline-none focus:border-slate-300"
-          />
+            title={isMax ? '还原' : '最大化'}
+          >
+            <Maximize2 className={isMax ? 'h-4 w-4 text-brand-500' : 'h-4 w-4'} />
+          </button>
+          <button
+            className="flex w-12 items-center justify-center text-app-muted hover:bg-red-600 hover:text-white"
+            onClick={() => window.toolsx.windowControls.close()}
+            title="关闭"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
-
-        <Dialog.Root>
-          <Dialog.Trigger asChild>
-            <button className="inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
-              <Info className="h-4 w-4" />
-              关于
-            </button>
-          </Dialog.Trigger>
-          <Dialog.Portal>
-            <Dialog.Overlay className="fixed inset-0 bg-black/30" />
-            <Dialog.Content className="fixed left-1/2 top-1/2 w-[92vw] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl">
-              <Dialog.Title className="text-base font-semibold text-slate-900">关于 ToolsX</Dialog.Title>
-              <Dialog.Description className="mt-2 text-sm text-slate-600">
-                这是一个 Electron + React + Vite + Tailwind 的生产级骨架。
-              </Dialog.Description>
-              <div className="mt-4 rounded-lg bg-slate-50 p-3 text-sm text-slate-700">
-                你可以在这里逐步添加「视频转 GIF / 图片格式转换 / 压缩」等工具功能。
-              </div>
-              <div className="mt-4 flex justify-end">
-                <Dialog.Close asChild>
-                  <button className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
-                    知道了
-                  </button>
-                </Dialog.Close>
-              </div>
-            </Dialog.Content>
-          </Dialog.Portal>
-        </Dialog.Root>
       </div>
     </div>
   )

@@ -7,8 +7,10 @@ export async function createMainWindow(): Promise<BrowserWindow> {
     height: 720,
     minWidth: 900,
     minHeight: 600,
+    frame: false,
     show: false,
     titleBarStyle: 'hiddenInset',
+    autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,
@@ -19,6 +21,10 @@ export async function createMainWindow(): Promise<BrowserWindow> {
 
   win.on('ready-to-show', () => {
     win.show()
+
+    if (process.env.ELECTRON_RENDERER_URL) {
+      win.webContents.openDevTools({ mode: 'detach' })
+    }
   })
 
   win.webContents.setWindowOpenHandler(({ url }: { url: string }) => {
