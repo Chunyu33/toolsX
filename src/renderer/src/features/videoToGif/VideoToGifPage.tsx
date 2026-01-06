@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Download, Film, Loader2, Play, Wand2 } from 'lucide-react'
 import { toLocalfileUrl } from './utils'
 
@@ -7,11 +7,19 @@ type Segment = {
   endSeconds: number
 }
 
+type GifOptions = {
+  preset: 'low' | 'medium' | 'high' | 'custom'
+  fps: number
+  width: number
+  keepOriginalWidth: boolean
+}
+
 // Minimal first version: user chooses a file, sets segment, preview video in that range, then generate GIF.
 export default function VideoToGifPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const [videoPath, setVideoPath] = useState<string | null>(null)
   const [segment, setSegment] = useState<Segment>({ startSeconds: 0, endSeconds: 3 })
+  const [gifOptions, setGifOptions] = useState<GifOptions>({ preset: 'medium', fps: 12, width: 720, keepOriginalWidth: false })
   const [gifPath, setGifPath] = useState<string | null>(null)
   const [busy, setBusy] = useState(false)
   const [videoPlayable, setVideoPlayable] = useState(true)
@@ -19,6 +27,24 @@ export default function VideoToGifPage() {
 
   const videoUrl = useMemo(() => (videoPath ? toLocalfileUrl(videoPath) : null), [videoPath])
   const gifUrl = useMemo(() => (gifPath ? toLocalfileUrl(gifPath) : null), [gifPath])
+
+  useEffect(() => {
+    const el = videoRef.current
+    if (!el) return
+    el.volume = 0.3
+  }, [videoUrl])
+
+  const applyPreset = (preset: GifOptions['preset']) => {
+    if (preset === 'low') {
+      setGifOptions((s) => ({ ...s, preset, fps: 10, width: 480, keepOriginalWidth: false }))
+    } else if (preset === 'medium') {
+      setGifOptions((s) => ({ ...s, preset, fps: 12, width: 720, keepOriginalWidth: false }))
+    } else if (preset === 'high') {
+      setGifOptions((s) => ({ ...s, preset, fps: 15, width: 1080, keepOriginalWidth: false }))
+    } else {
+      setGifOptions((s) => ({ ...s, preset }))
+    }
+  }
 
   const playSegment = async () => {
     const el = videoRef.current
@@ -62,7 +88,10 @@ export default function VideoToGifPage() {
       const result = await window.toolsx.videoToGif.convert({
         inputPath: videoPath,
         startSeconds: segment.startSeconds,
-        endSeconds: segment.endSeconds
+        endSeconds: segment.endSeconds,
+        fps: gifOptions.fps,
+        width: gifOptions.keepOriginalWidth ? undefined : gifOptions.width,
+        keepOriginalWidth: gifOptions.keepOriginalWidth
       })
       setGifPath(result.gifPath)
       setErrorText(null)
@@ -79,7 +108,7 @@ export default function VideoToGifPage() {
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-6">
+    <div className="mx-auto max-w-6xl px-6 py-6">
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -96,9 +125,9 @@ export default function VideoToGifPage() {
           </button>
         </div>
 
-        <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4">
-            <div className="text-sm font-semibold text-app-text">片段设置</div>
+        <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
+          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+            <div className="text-sm font-semibold text-app-text">设置与操作</div>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <label className="text-xs text-app-muted">
                 开始（秒）
@@ -132,6 +161,110 @@ export default function VideoToGifPage() {
               </label>
             </div>
 
+            <div className="mt-4">
+              <div className="text-xs font-semibold text-app-text">质量预设</div>
+              <div className="mt-2 grid grid-cols-4 gap-2">
+                <button
+                  className={
+                    gifOptions.preset === 'low'
+                      ? 'rounded-lg bg-brand-600 px-2 py-2 text-xs font-medium text-white'
+                      : 'rounded-lg border border-app-border bg-app-surface px-2 py-2 text-xs text-app-text hover:bg-app-surface2'
+                  }
+                  onClick={() => applyPreset('low')}
+                  type="button"
+                >
+                  低
+                </button>
+                <button
+                  className={
+                    gifOptions.preset === 'medium'
+                      ? 'rounded-lg bg-brand-600 px-2 py-2 text-xs font-medium text-white'
+                      : 'rounded-lg border border-app-border bg-app-surface px-2 py-2 text-xs text-app-text hover:bg-app-surface2'
+                  }
+                  onClick={() => applyPreset('medium')}
+                  type="button"
+                >
+                  中
+                </button>
+                <button
+                  className={
+                    gifOptions.preset === 'high'
+                      ? 'rounded-lg bg-brand-600 px-2 py-2 text-xs font-medium text-white'
+                      : 'rounded-lg border border-app-border bg-app-surface px-2 py-2 text-xs text-app-text hover:bg-app-surface2'
+                  }
+                  onClick={() => applyPreset('high')}
+                  type="button"
+                >
+                  高
+                </button>
+                <button
+                  className={
+                    gifOptions.preset === 'custom'
+                      ? 'rounded-lg bg-brand-600 px-2 py-2 text-xs font-medium text-white'
+                      : 'rounded-lg border border-app-border bg-app-surface px-2 py-2 text-xs text-app-text hover:bg-app-surface2'
+                  }
+                  onClick={() => applyPreset('custom')}
+                  type="button"
+                >
+                  自定义
+                </button>
+              </div>
+            </div>
+
+            <label className="mt-4 flex items-center gap-2 text-xs text-app-muted">
+              <input
+                type="checkbox"
+                checked={gifOptions.keepOriginalWidth}
+                onChange={(e) => {
+                  const v = e.target.checked
+                  setGifOptions((s) => ({ ...s, keepOriginalWidth: v, preset: 'custom' }))
+                }}
+              />
+              保持原视频宽度（不缩放）
+            </label>
+
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <label className="text-xs text-app-muted">
+                FPS
+                <input
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={gifOptions.fps}
+                  onChange={(e) => {
+                    const raw = e.target.value
+                    const n = raw === '' ? 12 : Number(raw)
+                    setGifOptions((s) => ({
+                      ...s,
+                      preset: 'custom',
+                      fps: Number.isFinite(n) ? Math.max(1, Math.round(n)) : s.fps
+                    }))
+                  }}
+                  className="mt-1 w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text outline-none focus:border-brand-300"
+                />
+              </label>
+              <label className="text-xs text-app-muted">
+                宽度（px）
+                <input
+                  type="number"
+                  min={64}
+                  step={16}
+                  value={gifOptions.width}
+                  disabled={gifOptions.keepOriginalWidth}
+                  onChange={(e) => {
+                    const raw = e.target.value
+                    const n = raw === '' ? 720 : Number(raw)
+                    setGifOptions((s) => ({
+                      ...s,
+                      preset: 'custom',
+                      width: Number.isFinite(n) ? Math.max(64, Math.round(n)) : s.width
+                    }))
+                  }}
+                  className="mt-1 w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text outline-none focus:border-brand-300 disabled:opacity-60"
+                />
+              </label>
+            </div>
+
             <div className="mt-4 flex items-center gap-2">
               <button
                 className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface"
@@ -150,9 +283,11 @@ export default function VideoToGifPage() {
                 {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
                 生成 GIF
               </button>
-
-              {videoPath ? <div className="truncate text-xs text-app-muted">{videoPath}</div> : null}
             </div>
+
+            {videoPath ? (
+              <div className="mt-2 break-all text-xs text-app-muted">{videoPath}</div>
+            ) : null}
 
             {errorText ? (
               <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-red-600">
@@ -160,71 +295,80 @@ export default function VideoToGifPage() {
               </div>
             ) : null}
 
-            <div className="mt-4">
-              <div className="text-xs font-semibold text-app-text">视频预览</div>
-              <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-black">
-                {videoUrl ? (
-                  <video
-                    key={videoUrl}
-                    ref={videoRef}
-                    src={videoUrl}
-                    controls
-                    className="h-[260px] w-full"
-                    onError={(e) => {
-                      const mediaError = e.currentTarget.error
-                      const code = mediaError?.code
-                      setVideoPlayable(false)
-                      setErrorText(
-                        `该视频无法在应用内预览。你仍可尝试直接生成 GIF。${code ? `（错误码：${code}）` : ''}`
-                      )
-                    }}
-                    onLoadedMetadata={() => {
-                      setVideoPlayable(true)
-                      setErrorText(null)
-                    }}
-                    onCanPlay={() => {
-                      setVideoPlayable(true)
-                      setErrorText(null)
-                    }}
-                  />
-                ) : (
-                  <div className="flex h-[260px] items-center justify-center text-sm text-app-muted">未选择视频</div>
-                )}
-              </div> 
-            </div>
           </div>
 
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4">
-            <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold text-app-text">GIF 预览</div>
-              {gifPath ? (
-                <button
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
-                  onClick={async () => {
-                    try {
-                      const res = await window.toolsx.files.saveGif({ sourcePath: gifPath })
-                      if (!res.canceled && res.savedPath) {
+          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+              <div>
+                <div className="text-sm font-semibold text-app-text">视频预览</div>
+                <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-black">
+                  {videoUrl ? (
+                    <video
+                      key={videoUrl}
+                      ref={videoRef}
+                      src={videoUrl}
+                      controls
+                      controlsList="nofullscreen noremoteplayback"
+                      disablePictureInPicture
+                      className="h-[360px] w-full"
+                      onError={(e) => {
+                        const mediaError = e.currentTarget.error
+                        const code = mediaError?.code
+                        setVideoPlayable(false)
+                        setErrorText(
+                          `该视频无法在应用内预览。你仍可尝试直接生成 GIF。${code ? `（错误码：${code}）` : ''}`
+                        )
+                      }}
+                      onLoadedMetadata={() => {
+                        setVideoPlayable(true)
                         setErrorText(null)
-                        alert(`GIF 已保存到：${res.savedPath}`)
-                      }
-                    } catch (e) {
-                      setErrorText(e instanceof Error ? e.message : String(e))
-                    }
-                  }}
-                >
-                  <Download className="h-3.5 w-3.5" />
-                  保存 GIF
-                </button>
-              ) : null}
+                      }}
+                      onCanPlay={() => {
+                        setVideoPlayable(true)
+                        setErrorText(null)
+                      }}
+                    />
+                  ) : (
+                    <div className="flex h-[360px] items-center justify-center text-sm text-app-muted">未选择视频</div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-app-text">GIF 预览</div>
+                  {gifPath ? (
+                    <button
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+                      onClick={async () => {
+                        try {
+                          const res = await window.toolsx.files.saveGif({ sourcePath: gifPath })
+                          if (!res.canceled && res.savedPath) {
+                            setErrorText(null)
+                            alert(`GIF 已保存到：${res.savedPath}`)
+                          }
+                        } catch (e) {
+                          setErrorText(e instanceof Error ? e.message : String(e))
+                        }
+                      }}
+                    >
+                      <Download className="h-3.5 w-3.5" />
+                      保存 GIF
+                    </button>
+                  ) : null}
+                </div>
+                <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
+                  {gifUrl ? (
+                    <img src={gifUrl} className="block h-[360px] w-full object-contain" />
+                  ) : (
+                    <div className="flex h-[360px] items-center justify-center text-sm text-app-muted">尚未生成</div>
+                  )}
+                </div>
+                <div className="mt-2 text-xs text-app-muted">
+                  当前配置：{gifOptions.fps}fps / {gifOptions.keepOriginalWidth ? '原始宽度' : `${gifOptions.width}px`}
+                </div>
+              </div>
             </div>
-            <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
-              {gifUrl ? (
-                <img src={gifUrl} className="block h-[320px] w-full object-contain" />
-              ) : (
-                <div className="flex h-[320px] items-center justify-center text-sm text-app-muted">尚未生成</div>
-              )}
-            </div>
-            <div className="mt-2 text-xs text-app-muted">首次版本：默认 12fps / 720px 宽度，后续可在设置中加入质量参数</div>
           </div>
         </div>
       </div>

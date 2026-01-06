@@ -8,6 +8,9 @@ type ConvertArgs = {
   inputPath: string
   startSeconds: number
   endSeconds: number
+  fps?: number
+  width?: number
+  keepOriginalWidth?: boolean
 }
 
 function getFfmpegPath(): string {
@@ -23,10 +26,25 @@ function clampSeconds(v: number): number {
   return Math.max(0, v)
 }
 
-export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSeconds }: ConvertArgs): Promise<string> {
+function clampFps(v: number | undefined): number {
+  if (!Number.isFinite(v)) return 12
+  return Math.min(60, Math.max(1, Math.round(v as number)))
+}
+
+function clampWidth(v: number | undefined): number {
+  if (!Number.isFinite(v)) return 720
+  const n = Math.max(64, Math.round(v as number))
+  // Some encoders/filters behave better with even widths.
+  return n % 2 === 0 ? n : n - 1
+}
+
+export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSeconds, fps, width, keepOriginalWidth }: ConvertArgs): Promise<string> {
   const start = clampSeconds(startSeconds)
   const end = clampSeconds(endSeconds)
   if (end <= start) throw new Error('Invalid time range: endSeconds must be greater than startSeconds')
+
+  const outFps = clampFps(fps)
+  const outWidth = keepOriginalWidth ? undefined : clampWidth(width)
 
   // Create an isolated temp folder for each conversion.
   const tmpDir = await fs.mkdtemp(path.join(app.getPath('temp'), 'toolsx-v2g-'))
@@ -38,6 +56,14 @@ export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSec
 
   // Two-pass palette generation for better quality.
   // NOTE: Keep filters simple for first version; can extend with fps/scale options later.
+  const paletteVf = outWidth
+    ? `fps=${outFps},scale=${outWidth}:-1:flags=lanczos,palettegen`
+    : `fps=${outFps},palettegen`
+
+  const useLavfi = outWidth
+    ? `fps=${outFps},scale=${outWidth}:-1:flags=lanczos[x];[x][1:v]paletteuse`
+    : `fps=${outFps}[x];[x][1:v]paletteuse`
+
   await runFfmpeg(ffmpeg, [
     '-ss',
     String(start),
@@ -46,7 +72,7 @@ export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSec
     '-i',
     inputPath,
     '-vf',
-    'fps=12,scale=720:-1:flags=lanczos,palettegen',
+    paletteVf,
     '-y',
     palettePath
   ])
@@ -61,7 +87,7 @@ export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSec
     '-i',
     palettePath,
     '-lavfi',
-    'fps=12,scale=720:-1:flags=lanczos[x];[x][1:v]paletteuse',
+    useLavfi,
     '-y',
     outPath
   ])

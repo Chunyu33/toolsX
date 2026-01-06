@@ -16,7 +16,14 @@ export type ToolsXApi = {
     saveGif: (args: { sourcePath: string }) => Promise<{ canceled: boolean; savedPath?: string }>
   }
   videoToGif: {
-    convert: (args: { inputPath: string; startSeconds: number; endSeconds: number }) => Promise<{ gifPath: string }>
+    convert: (args: {
+      inputPath: string
+      startSeconds: number
+      endSeconds: number
+      fps?: number
+      width?: number
+      keepOriginalWidth?: boolean
+    }) => Promise<{ gifPath: string }>
   }
 }
 

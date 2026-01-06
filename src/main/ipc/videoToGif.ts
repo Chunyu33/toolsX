@@ -6,6 +6,9 @@ export type ConvertVideoToGifArgs = {
   inputPath: string
   startSeconds: number
   endSeconds: number
+  fps?: number
+  width?: number
+  keepOriginalWidth?: boolean
 }
 
 export type ConvertVideoToGifResult = {
@@ -17,7 +20,10 @@ export function registerVideoToGifIpc(): void {
     const gifPath = await convertVideoSegmentToGif({
       inputPath: args.inputPath,
       startSeconds: args.startSeconds,
-      endSeconds: args.endSeconds
+      endSeconds: args.endSeconds,
+      fps: args.fps,
+      width: args.width,
+      keepOriginalWidth: args.keepOriginalWidth
     })
 
     const payload: ConvertVideoToGifResult = { gifPath }
