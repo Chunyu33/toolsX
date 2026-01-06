@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
-import { Film, Loader2, Play, Wand2 } from 'lucide-react'
+import { Download, Film, Loader2, Play, Wand2 } from 'lucide-react'
 import { toLocalfileUrl } from './utils'
 
 type Segment = {
@@ -107,7 +107,11 @@ export default function VideoToGifPage() {
                   min={0}
                   step={0.1}
                   value={segment.startSeconds}
-                  onChange={(e) => setSegment((s) => ({ ...s, startSeconds: Number(e.currentTarget.value) }))}
+                  onChange={(e) => {
+                    const raw = e.target.value
+                    const n = raw === '' ? 0 : Number(raw)
+                    setSegment((s) => ({ ...s, startSeconds: Number.isFinite(n) ? n : s.startSeconds }))
+                  }}
                   className="mt-1 w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text outline-none focus:border-brand-300"
                 />
               </label>
@@ -118,7 +122,11 @@ export default function VideoToGifPage() {
                   min={0}
                   step={0.1}
                   value={segment.endSeconds}
-                  onChange={(e) => setSegment((s) => ({ ...s, endSeconds: Number(e.currentTarget.value) }))}
+                  onChange={(e) => {
+                    const raw = e.target.value
+                    const n = raw === '' ? 0 : Number(raw)
+                    setSegment((s) => ({ ...s, endSeconds: Number.isFinite(n) ? n : s.endSeconds }))
+                  }}
                   className="mt-1 w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text outline-none focus:border-brand-300"
                 />
               </label>
@@ -157,25 +165,58 @@ export default function VideoToGifPage() {
               <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-black">
                 {videoUrl ? (
                   <video
+                    key={videoUrl}
                     ref={videoRef}
                     src={videoUrl}
                     controls
                     className="h-[260px] w-full"
-                    onError={() => {
+                    onError={(e) => {
+                      const mediaError = e.currentTarget.error
+                      const code = mediaError?.code
                       setVideoPlayable(false)
-                      setErrorText('该视频格式/编码无法在应用内预览。你仍可尝试直接生成 GIF。')
+                      setErrorText(
+                        `该视频无法在应用内预览。你仍可尝试直接生成 GIF。${code ? `（错误码：${code}）` : ''}`
+                      )
                     }}
-                    onCanPlay={() => setVideoPlayable(true)}
+                    onLoadedMetadata={() => {
+                      setVideoPlayable(true)
+                      setErrorText(null)
+                    }}
+                    onCanPlay={() => {
+                      setVideoPlayable(true)
+                      setErrorText(null)
+                    }}
                   />
                 ) : (
                   <div className="flex h-[260px] items-center justify-center text-sm text-app-muted">未选择视频</div>
                 )}
-              </div>
+              </div> 
             </div>
           </div>
 
           <div className="rounded-xl border border-app-border bg-app-surface2 p-4">
-            <div className="text-sm font-semibold text-app-text">GIF 预览</div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold text-app-text">GIF 预览</div>
+              {gifPath ? (
+                <button
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
+                  onClick={async () => {
+                    try {
+                      const res = await window.toolsx.files.saveGif({ sourcePath: gifPath })
+                      if (!res.canceled && res.savedPath) {
+                        setErrorText(null)
+                        alert(`GIF 已保存到：${res.savedPath}`)
+                      }
+                    } catch (e) {
+                      setErrorText(e instanceof Error ? e.message : String(e))
+                    }
+                  }}
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  保存 GIF
+                </button>
+              ) : null}
+            </div>
             <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
               {gifUrl ? (
                 <img src={gifUrl} className="block h-[320px] w-full object-contain" />

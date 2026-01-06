@@ -10,23 +10,25 @@ export default function ToolPage() {
   const tool = useMemo(() => tools.find((t) => t.id === toolId), [toolId])
 
   return (
-    <div className="min-h-screen bg-app-bg">
+    <div className="flex h-full min-h-0 flex-col bg-app-bg">
       <Header title={tool?.title ?? '工具'} />
 
-      {toolId === 'video-to-gif' ? (
-        <VideoToGifPage />
-      ) : (
-        <div className="mx-auto max-w-5xl px-6 py-6">
-          <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
-            <div className="text-lg font-semibold text-app-text">{tool?.title ?? '未找到该工具'}</div>
-            <div className="mt-2 text-sm text-app-muted">{tool?.description ?? '请返回首页选择工具。'}</div>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {toolId === 'video-to-gif' ? (
+          <VideoToGifPage />
+        ) : (
+          <div className="mx-auto max-w-5xl px-6 py-6">
+            <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+              <div className="text-lg font-semibold text-app-text">{tool?.title ?? '未找到该工具'}</div>
+              <div className="mt-2 text-sm text-app-muted">{tool?.description ?? '请返回首页选择工具。'}</div>
 
-            <div className="mt-6 rounded-lg border border-app-border bg-app-surface2 p-4 text-sm text-app-text">
-              这里是占位页面：后续你可以把每个工具拆成独立的 feature 模块（页面 + hooks + ipc + 业务逻辑）。
+              <div className="mt-6 rounded-lg border border-app-border bg-app-surface2 p-4 text-sm text-app-text">
+                这里是占位页面：后续你可以把每个工具拆成独立的 feature 模块（页面 + hooks + ipc + 业务逻辑）。
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   )
 }

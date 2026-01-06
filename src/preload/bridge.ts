@@ -13,6 +13,7 @@ export type ToolsXApi = {
   }
   files: {
     openVideo: () => Promise<{ canceled: boolean; filePath?: string }>
+    saveGif: (args: { sourcePath: string }) => Promise<{ canceled: boolean; savedPath?: string }>
   }
   videoToGif: {
     convert: (args: { inputPath: string; startSeconds: number; endSeconds: number }) => Promise<{ gifPath: string }>
@@ -30,7 +31,8 @@ export const api: ToolsXApi = {
     isMaximized: () => ipcRenderer.invoke(IpcChannels.WindowIsMaximized)
   },
   files: {
-    openVideo: () => ipcRenderer.invoke(IpcChannels.FilesOpenVideo)
+    openVideo: () => ipcRenderer.invoke(IpcChannels.FilesOpenVideo),
+    saveGif: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveGif, args)
   },
   videoToGif: {
     convert: (args) => ipcRenderer.invoke(IpcChannels.VideoToGifConvert, args)

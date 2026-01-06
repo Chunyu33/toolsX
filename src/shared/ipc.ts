@@ -5,6 +5,7 @@ export const IpcChannels = {
   WindowClose: 'window:close',
   WindowIsMaximized: 'window:isMaximized',
   FilesOpenVideo: 'files:openVideo',
+  FilesSaveGif: 'files:saveGif',
   VideoToGifConvert: 'videoToGif:convert'
 } as const
 

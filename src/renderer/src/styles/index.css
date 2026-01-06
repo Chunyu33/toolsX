@@ -7,6 +7,10 @@ body {
   height: 100%;
 }
 
+#root {
+  height: 100%;
+}
+
 :root {
   --app-bg: 210 30% 98%;
   --app-surface: 0 0% 100%;
@@ -49,6 +53,32 @@ body {
     Arial, "Apple Color Emoji", "Segoe UI Emoji";
   background: hsl(var(--app-bg));
   color: hsl(var(--app-text));
+  overflow: hidden;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: hsl(var(--app-border)) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--app-border));
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--brand-300));
 }
 
 .titlebar {

@@ -1,9 +1,21 @@
 import { dialog, ipcMain, type IpcMainInvokeEvent } from 'electron'
+import fs from 'fs/promises'
+import os from 'os'
+import path from 'path'
 import { IpcChannels } from '../../shared/ipc'
 
 export type OpenVideoResult = {
   canceled: boolean
   filePath?: string
+}
+
+export type SaveGifArgs = {
+  sourcePath: string
+}
+
+export type SaveGifResult = {
+  canceled: boolean
+  savedPath?: string
 }
 
 export function registerFilesIpc(): void {
@@ -23,6 +35,23 @@ export function registerFilesIpc(): void {
     }
 
     const payload: OpenVideoResult = { canceled: false, filePath: result.filePaths[0] }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesSaveGif, async (_event: IpcMainInvokeEvent, args: SaveGifArgs) => {
+    const result = await dialog.showSaveDialog({
+      title: '保存 GIF',
+      defaultPath: path.join(os.homedir(), 'output.gif'),
+      filters: [{ name: 'GIF Image', extensions: ['gif'] }]
+    })
+
+    if (result.canceled || !result.filePath) {
+      const payload: SaveGifResult = { canceled: true }
+      return payload
+    }
+
+    await fs.copyFile(args.sourcePath, result.filePath)
+    const payload: SaveGifResult = { canceled: false, savedPath: result.filePath }
     return payload
   })
 }

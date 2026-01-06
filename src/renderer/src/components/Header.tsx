@@ -33,7 +33,7 @@ export default function Header({ title, onSearchChange }: Props) {
 
   return (
     <div className="sticky top-0 z-20 border-b border-app-border bg-app-surface/80 backdrop-blur">
-      <div className="titlebar flex h-12 items-stretch">
+      <div className="titlebar flex h-12 items-center">
         <div className="flex items-center gap-2 pl-3 pr-2">
           <div className="h-7 w-7 rounded-lg bg-brand-500/20 ring-1 ring-brand-300/40" />
           <div className="text-sm font-semibold tracking-wide text-app-text">ToolsX</div>
@@ -69,7 +69,7 @@ export default function Header({ title, onSearchChange }: Props) {
           <SettingsModal />
         </div>
 
-        <div className="flex w-[150px] items-stretch justify-end">
+        <div className="flex h-12 w-[150px] items-stretch justify-end">
           <button
             className="flex w-12 items-center justify-center text-app-muted hover:bg-app-surface2 hover:text-app-text"
             onClick={() => window.toolsx.windowControls.minimize()}
