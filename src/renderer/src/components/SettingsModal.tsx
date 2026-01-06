@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Info, Laptop, Moon, Settings, Sun } from 'lucide-react'
+import { Info, Laptop, Moon, Settings, Sun, X } from 'lucide-react'
 import { getStoredThemeMode, setStoredThemeMode, type ThemeMode } from '../theme/theme'
 
 type Props = {
@@ -102,14 +102,14 @@ export default function SettingsModal({ triggerClassName }: Props) {
               <div className="flex items-center justify-between">
                 <Dialog.Title className="text-base font-semibold text-app-text">{title}</Dialog.Title>
                 <Dialog.Close asChild>
-                  <button className="rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2">
-                    关闭
+                  <button className="rounded-lg border border-app-border bg-app-surface px-2 py-2 text-sm text-app-text hover:bg-app-surface2">
+                    <X className="h-4 w-4" />
                   </button>
                 </Dialog.Close>
               </div>
 
               {nav === 'general' ? (
-                <div className="mt-4 space-y-4">
+                <div key={nav} className="panel-enter mt-4 space-y-4">
                   <div className="rounded-xl border border-app-border bg-app-surface p-4">
                     <div className="text-sm font-semibold text-app-text">外观</div>
                     <div className="mt-1 text-xs text-app-muted">选择亮色/暗色或跟随系统</div>
@@ -127,7 +127,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                   </div>
                 </div>
               ) : (
-                <div className="mt-4 space-y-4">
+                <div key={nav} className="panel-enter mt-4 space-y-4">
                   <div className="rounded-xl border border-app-border bg-app-surface p-4">
                     <div className="text-sm font-semibold text-app-text">ToolsX</div>
                     <div className="mt-1 text-xs text-app-muted">桌面全能工具箱</div>

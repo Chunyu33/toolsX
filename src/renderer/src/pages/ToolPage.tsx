@@ -3,6 +3,9 @@ import { useParams } from 'react-router-dom'
 import Header from '../components/Header'
 import { tools } from '../features/tools/data'
 import VideoToGifPage from '../features/videoToGif/VideoToGifPage'
+import ImageConvertPage from '../features/imageConvert/ImageConvertPage'
+import ImageCompressPage from '../features/imageCompress/ImageCompressPage'
+import JsonFormatterPage from '../features/jsonFormatter/JsonFormatterPage'
 
 export default function ToolPage() {
   const { toolId } = useParams()
@@ -16,6 +19,12 @@ export default function ToolPage() {
       <div className="min-h-0 flex-1 overflow-y-auto">
         {toolId === 'video-to-gif' ? (
           <VideoToGifPage />
+        ) : toolId === 'image-convert' ? (
+          <ImageConvertPage />
+        ) : toolId === 'image-compress' ? (
+          <ImageCompressPage />
+        ) : toolId === 'json-formatter' ? (
+          <JsonFormatterPage />
         ) : (
           <div className="mx-auto max-w-5xl px-6 py-6">
             <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">

@@ -6,7 +6,12 @@ function getMimeType(filePath: string): string | undefined {
   if (lower.endsWith('.webm')) return 'video/webm'
   if (lower.endsWith('.gif')) return 'image/gif'
   if (lower.endsWith('.png')) return 'image/png'
+  if (lower.endsWith('.webp')) return 'image/webp'
+  if (lower.endsWith('.avif')) return 'image/avif'
   if (lower.endsWith('.jpg') || lower.endsWith('.jpeg')) return 'image/jpeg'
+  if (lower.endsWith('.ico')) return 'image/x-icon'
+  if (lower.endsWith('.bmp')) return 'image/bmp'
+  if (lower.endsWith('.tif') || lower.endsWith('.tiff')) return 'image/tiff'
   return undefined
 }
 

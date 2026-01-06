@@ -24,22 +24,6 @@ export default function HomePage() {
 
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-5xl px-6 py-6">
-          <div className="rounded-xl border border-app-border bg-app-surface p-4 text-sm text-app-text shadow-sm">
-            <div className="font-medium">IPC 测试</div>
-            <div className="mt-2 flex items-center gap-2">
-              <button
-                className="rounded-lg bg-brand-600 px-3 py-2 text-white hover:bg-brand-700"
-                onClick={async () => {
-                  const msg = await window.toolsx.system.ping()
-                  alert(msg)
-                }}
-              >
-                Ping 主进程
-              </button>
-              <div className="text-app-muted">通过 preload 暴露的安全 API 调用</div>
-            </div>
-          </div>
-
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {list.map((t) => (
               <Link
