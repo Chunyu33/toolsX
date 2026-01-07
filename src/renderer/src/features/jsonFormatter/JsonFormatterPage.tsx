@@ -1,11 +1,20 @@
 import { useMemo, useState } from 'react'
 import { Copy, Eraser, Scissors, Wand2 } from 'lucide-react'
+import Toast from '../../components/Toast'
+import JsonCodeBlock from '../../components/JsonCodeBlock'
 
 export default function JsonFormatterPage() {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
   const [errorText, setErrorText] = useState<string | null>(null)
   const [indent, setIndent] = useState(2)
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastText, setToastText] = useState('')
+
+  const showToast = (text: string) => {
+    setToastText(text)
+    setToastOpen(true)
+  }
 
   const stats = useMemo(() => {
     return {
@@ -18,7 +27,7 @@ export default function JsonFormatterPage() {
     try {
       JSON.parse(input)
       setErrorText(null)
-      alert('JSON 有效')
+      showToast('JSON 有效')
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
     }
@@ -49,13 +58,15 @@ export default function JsonFormatterPage() {
   const copyOutput = async () => {
     try {
       await navigator.clipboard.writeText(output || '')
+      showToast('已复制到剪贴板')
     } catch {
-      // ignore
+      showToast('复制失败')
     }
   }
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-6">
+      <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -157,12 +168,19 @@ export default function JsonFormatterPage() {
                 />
               </div>
               <div>
-                <div className="text-sm font-semibold text-app-text">输出</div>
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-semibold text-app-text">输出</div>
+                  <div className="text-xs text-app-muted">高亮预览（只读）</div>
+                </div>
+                <div className="mt-2 h-[420px]">
+                  <JsonCodeBlock value={output || ''} className="h-full w-full" />
+                </div>
+                <div className="mt-3 text-xs text-app-muted">如需编辑输出，可在下方文本框修改：</div>
                 <textarea
                   value={output}
                   onChange={(e) => setOutput(e.target.value)}
                   spellCheck={false}
-                  className="mt-2 h-[420px] w-full resize-none rounded-xl border border-app-border bg-app-surface px-3 py-2 font-mono text-xs text-app-text outline-none focus:border-brand-300"
+                  className="mt-2 h-[180px] w-full resize-none rounded-xl border border-app-border bg-app-surface px-3 py-2 font-mono text-xs text-app-text outline-none focus:border-brand-300"
                   placeholder="格式化/压缩结果..."
                 />
               </div>

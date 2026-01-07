@@ -1,4 +1,6 @@
 import { dialog, ipcMain, type IpcMainInvokeEvent } from 'electron'
+import { createWriteStream } from 'node:fs'
+import { createRequire } from 'node:module'
 import fs from 'fs/promises'
 import os from 'os'
 import path from 'path'
@@ -23,6 +25,11 @@ export type OpenImageResult = {
   filePath?: string
 }
 
+export type OpenImagesResult = {
+  canceled: boolean
+  filePaths?: string[]
+}
+
 export type SaveImageArgs = {
   sourcePath: string
   defaultName?: string
@@ -33,12 +40,97 @@ export type SaveImageResult = {
   savedPath?: string
 }
 
+export type SaveZipArgs = {
+  entries: Array<{ sourcePath: string; name: string }>
+  defaultName?: string
+  readmeText?: string
+}
+
+export type SaveZipResult = {
+  canceled: boolean
+  savedPath?: string
+}
+
+export type CleanupTempImagesArgs = {
+  tempDirs?: string[]
+}
+
+export type CleanupTempImagesResult = {
+  deletedCount: number
+}
+
 export type GetFileInfoArgs = {
   filePath: string
 }
 
 export type GetFileInfoResult = {
   sizeBytes: number
+}
+
+function getArchiver() {
+  const require = createRequire(import.meta.url)
+  try {
+    return require('archiver') as any
+  } catch {
+    throw new Error('缺少依赖 archiver：请在项目根目录执行 npm i archiver（安装后重启 npm run dev）。')
+  }
+}
+
+function normalizePathForCompare(p: string): string {
+  // Windows 下路径大小写不敏感，这里统一转小写并把分隔符归一化，避免误判
+  return path.resolve(p).replace(/\\/g, '/').toLowerCase()
+}
+
+function isSafeToolsxTempDir(dir: string): boolean {
+  // 说明：清理操作必须“非常保守”，只允许删除系统 temp 下 toolsx 生成的目录
+  // 防止用户误传路径导致删除任意目录（安全边界）
+  const tmp = normalizePathForCompare(os.tmpdir())
+  const target = normalizePathForCompare(dir)
+  if (!target.startsWith(tmp + '/')) return false
+
+  const base = path.basename(dir)
+  return base.startsWith('toolsx-imgc-')
+}
+
+async function cleanupTempImageDirs(args: CleanupTempImagesArgs): Promise<CleanupTempImagesResult> {
+  let deletedCount = 0
+
+  if (args.tempDirs && args.tempDirs.length > 0) {
+    // 说明：按 renderer 记录的输出目录清理（只清理通过白名单校验的目录）
+    for (const dir of args.tempDirs) {
+      if (!isSafeToolsxTempDir(dir)) continue
+      try {
+        await fs.rm(dir, { recursive: true, force: true })
+        deletedCount += 1
+      } catch {
+        // ignore
+      }
+    }
+
+    return { deletedCount }
+  }
+
+  // 说明：兜底策略：清理系统 temp 下所有 toolsx-imgc-* 目录
+  // 注意：只按前缀清理，不做更激进的匹配，避免误删
+  try {
+    const tmp = os.tmpdir()
+    const list = await fs.readdir(tmp)
+    for (const name of list) {
+      if (!name.startsWith('toolsx-imgc-')) continue
+      const full = path.join(tmp, name)
+      if (!isSafeToolsxTempDir(full)) continue
+      try {
+        await fs.rm(full, { recursive: true, force: true })
+        deletedCount += 1
+      } catch {
+        // ignore
+      }
+    }
+  } catch {
+    // ignore
+  }
+
+  return { deletedCount }
 }
 
 export function registerFilesIpc(): void {
@@ -97,6 +189,25 @@ export function registerFilesIpc(): void {
     return payload
   })
 
+  ipcMain.handle(IpcChannels.FilesOpenImages, async (_event: IpcMainInvokeEvent) => {
+    const result = await dialog.showOpenDialog({
+      title: '选择图片文件（可多选）',
+      properties: ['openFile', 'multiSelections'],
+      filters: [
+        { name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'webp', 'avif', 'gif', 'ico', 'bmp', 'tiff'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      const payload: OpenImagesResult = { canceled: true }
+      return payload
+    }
+
+    const payload: OpenImagesResult = { canceled: false, filePaths: result.filePaths }
+    return payload
+  })
+
   ipcMain.handle(IpcChannels.FilesSaveImage, async (_event: IpcMainInvokeEvent, args: SaveImageArgs) => {
     const defaultName = args.defaultName ?? 'output.png'
 
@@ -113,6 +224,55 @@ export function registerFilesIpc(): void {
 
     await fs.copyFile(args.sourcePath, result.filePath)
     const payload: SaveImageResult = { canceled: false, savedPath: result.filePath }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesSaveZip, async (_event: IpcMainInvokeEvent, args: SaveZipArgs) => {
+    const defaultName = args.defaultName ?? 'output.zip'
+
+    const result = await dialog.showSaveDialog({
+      title: '保存压缩包（ZIP）',
+      defaultPath: path.join(os.homedir(), defaultName),
+      filters: [{ name: 'Zip', extensions: ['zip'] }]
+    })
+
+    if (result.canceled || !result.filePath) {
+      const payload: SaveZipResult = { canceled: true }
+      return payload
+    }
+
+    const archiver = getArchiver()
+    await new Promise<void>((resolve, reject) => {
+      const output = createWriteStream(result.filePath as string)
+      const archive = archiver('zip', { zlib: { level: 9 } })
+
+      output.on('close', () => resolve())
+      output.on('error', (e) => reject(e))
+
+      archive.on('warning', () => {
+        // ignore
+      })
+      archive.on('error', (e: unknown) => reject(e))
+
+      archive.pipe(output)
+
+      for (const entry of args.entries) {
+        archive.file(entry.sourcePath, { name: entry.name })
+      }
+
+      if (args.readmeText) {
+        archive.append(args.readmeText, { name: 'README.txt' })
+      }
+
+      void archive.finalize()
+    })
+
+    const payload: SaveZipResult = { canceled: false, savedPath: result.filePath }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesCleanupTempImages, async (_event: IpcMainInvokeEvent, args: CleanupTempImagesArgs) => {
+    const payload: CleanupTempImagesResult = await cleanupTempImageDirs(args)
     return payload
   })
 

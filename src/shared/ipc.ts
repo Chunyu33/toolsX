@@ -7,7 +7,10 @@ export const IpcChannels = {
   FilesOpenVideo: 'files:openVideo',
   FilesSaveGif: 'files:saveGif',
   FilesOpenImage: 'files:openImage',
+  FilesOpenImages: 'files:openImages',
   FilesSaveImage: 'files:saveImage',
+  FilesSaveZip: 'files:saveZip',
+  FilesCleanupTempImages: 'files:cleanupTempImages',
   FilesGetFileInfo: 'files:getFileInfo',
   VideoToGifConvert: 'videoToGif:convert',
   ImageConvertConvert: 'imageConvert:convert'

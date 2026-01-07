@@ -6,7 +6,7 @@ export default function App() {
   const location = useLocation()
 
   return (
-    <div key={location.pathname} className="page-enter">
+    <div key={location.pathname} className="page-enter h-full min-h-0">
       <Routes location={location}>
         <Route path="/" element={<HomePage />} />
         <Route path="/tool/:toolId" element={<ToolPage />} />

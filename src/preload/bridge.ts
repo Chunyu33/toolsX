@@ -15,7 +15,14 @@ export type ToolsXApi = {
     openVideo: () => Promise<{ canceled: boolean; filePath?: string }>
     saveGif: (args: { sourcePath: string }) => Promise<{ canceled: boolean; savedPath?: string }>
     openImage: () => Promise<{ canceled: boolean; filePath?: string }>
+    openImages: () => Promise<{ canceled: boolean; filePaths?: string[] }>
     saveImage: (args: { sourcePath: string; defaultName?: string }) => Promise<{ canceled: boolean; savedPath?: string }>
+    saveZip: (args: {
+      entries: Array<{ sourcePath: string; name: string }>
+      defaultName?: string
+      readmeText?: string
+    }) => Promise<{ canceled: boolean; savedPath?: string }>
+    cleanupTempImages: (args: { tempDirs?: string[] }) => Promise<{ deletedCount: number }>
     getFileInfo: (args: { filePath: string }) => Promise<{ sizeBytes: number }>
   }
   videoToGif: {
@@ -62,7 +69,10 @@ export const api: ToolsXApi = {
     openVideo: () => ipcRenderer.invoke(IpcChannels.FilesOpenVideo),
     saveGif: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveGif, args),
     openImage: () => ipcRenderer.invoke(IpcChannels.FilesOpenImage),
+    openImages: () => ipcRenderer.invoke(IpcChannels.FilesOpenImages),
     saveImage: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveImage, args),
+    saveZip: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveZip, args),
+    cleanupTempImages: (args) => ipcRenderer.invoke(IpcChannels.FilesCleanupTempImages, args),
     getFileInfo: (args) => ipcRenderer.invoke(IpcChannels.FilesGetFileInfo, args)
   },
   videoToGif: {

@@ -29,6 +29,13 @@ export type ConvertImageOutput = {
   sizeBytes: number
 }
 
+function isIcoInput(inputPath: string): boolean {
+  // 说明：目前项目依赖 sharp 作为统一解码/编码入口，但 sharp 对 ICO 的“解码”兼容性不稳定
+  // （很多 .ico 会报 Input file contains unsupported image format）。
+  // 因此我们先明确限制：支持“输出 ICO”，但不保证“ICO 输入互转”。
+  return inputPath.toLowerCase().endsWith('.ico')
+}
+
 function clampQuality(v: number | undefined): number {
   if (!Number.isFinite(v)) return 80
   return Math.min(100, Math.max(1, Math.round(v as number)))
@@ -70,6 +77,12 @@ async function getPngToIco(): Promise<(buffers: Buffer[]) => Promise<Buffer>> {
 async function renderToBuffer(args: { inputPath: string; format: ImageOutputFormat; quality?: number }): Promise<Buffer> {
   const sharp = getSharp()
   const q = clampQuality(args.quality)
+
+  if (isIcoInput(args.inputPath) && args.format !== 'ico') {
+    // 说明：这类错误如果直接抛 sharp 的原始报错，用户只会看到“unsupported image format”，体验很差。
+    // 这里做前置拦截，给出可理解的提示。
+    throw new Error('暂不支持将 ICO 作为输入转换为其它格式（当前仅支持输出 ICO）。请换用 PNG/JPG/WebP 等作为输入，或先用其它工具把 ICO 导出为 PNG 后再转换。')
+  }
 
   if (args.format === 'ico') {
     const pngToIco = await getPngToIco()
