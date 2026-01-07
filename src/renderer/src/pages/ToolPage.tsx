@@ -13,7 +13,7 @@ export default function ToolPage() {
   const tool = useMemo(() => tools.find((t) => t.id === toolId), [toolId])
 
   return (
-    <div className="flex h-full min-h-0 flex-col bg-app-bg">
+    <div className="app-gradient-bg flex h-full min-h-0 flex-col">
       <Header title={tool?.title ?? '工具'} />
 
       <div className="min-h-0 flex-1 overflow-y-auto">
