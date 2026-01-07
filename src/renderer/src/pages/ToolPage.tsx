@@ -5,6 +5,8 @@ import { tools } from '../features/tools/data'
 import VideoToGifPage from '../features/videoToGif/VideoToGifPage'
 import ImageConvertPage from '../features/imageConvert/ImageConvertPage'
 import ImageCompressPage from '../features/imageCompress/ImageCompressPage'
+import TimestampConvertPage from '../features/timestampConvert/TimestampConvertPage'
+import Base64ToolPage from '../features/base64Tool/Base64ToolPage'
 import JsonFormatterPage from '../features/jsonFormatter/JsonFormatterPage'
 
 export default function ToolPage() {
@@ -23,6 +25,10 @@ export default function ToolPage() {
           <ImageConvertPage />
         ) : toolId === 'image-compress' ? (
           <ImageCompressPage />
+        ) : toolId === 'timestamp-convert' ? (
+          <TimestampConvertPage />
+        ) : toolId === 'base64-tool' ? (
+          <Base64ToolPage />
         ) : toolId === 'json-formatter' ? (
           <JsonFormatterPage />
         ) : (

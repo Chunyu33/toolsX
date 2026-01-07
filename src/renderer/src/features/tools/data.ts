@@ -20,6 +20,18 @@ export const tools: ToolDefinition[] = [
     route: '/tool/image-compress'
   },
   {
+    id: 'timestamp-convert',
+    title: '时间戳转换',
+    description: '秒 / 毫秒互转，实时显示当前系统时间',
+    route: '/tool/timestamp-convert'
+  },
+  {
+    id: 'base64-tool',
+    title: 'Base64 工具',
+    description: '支持文本与图片的 Base64 互转（完全离线）',
+    route: '/tool/base64-tool'
+  },
+  {
     id: 'json-formatter',
     title: 'JSON 格式化',
     description: '快速格式化/压缩/校验 JSON，并一键复制结果',
