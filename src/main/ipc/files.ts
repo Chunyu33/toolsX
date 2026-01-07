@@ -30,6 +30,38 @@ export type OpenImagesResult = {
   filePaths?: string[]
 }
 
+export type OpenPdfResult = {
+  canceled: boolean
+  filePath?: string
+}
+
+export type OpenPdfsResult = {
+  canceled: boolean
+  filePaths?: string[]
+}
+
+export type SavePdfArgs = {
+  sourcePath: string
+  defaultName?: string
+}
+
+export type SavePdfResult = {
+  canceled: boolean
+  savedPath?: string
+}
+
+export type WriteTempFileArgs = {
+  // 说明：dirPrefix 用于区分工具/用途，必须走白名单校验，避免写入任意目录。
+  // 举例：toolsx-pdf-20260101...
+  dirPrefix: string
+  name: string
+  base64: string
+}
+
+export type WriteTempFileResult = {
+  filePath: string
+}
+
 export type SaveImageArgs = {
   sourcePath: string
   defaultName?: string
@@ -89,7 +121,12 @@ function isSafeToolsxTempDir(dir: string): boolean {
   if (!target.startsWith(tmp + '/')) return false
 
   const base = path.basename(dir)
-  return base.startsWith('toolsx-imgc-')
+  return base.startsWith('toolsx-imgc-') || base.startsWith('toolsx-pdf-')
+}
+
+function isSafeToolsxTempPrefix(prefix: string): boolean {
+  // 说明：写临时文件也必须非常保守，只允许 toolsx-pdf- 和 toolsx-imgc- 这类前缀。
+  return prefix.startsWith('toolsx-pdf-') || prefix.startsWith('toolsx-imgc-')
 }
 
 async function cleanupTempImageDirs(args: CleanupTempImagesArgs): Promise<CleanupTempImagesResult> {
@@ -116,7 +153,7 @@ async function cleanupTempImageDirs(args: CleanupTempImagesArgs): Promise<Cleanu
     const tmp = os.tmpdir()
     const list = await fs.readdir(tmp)
     for (const name of list) {
-      if (!name.startsWith('toolsx-imgc-')) continue
+      if (!name.startsWith('toolsx-imgc-') && !name.startsWith('toolsx-pdf-')) continue
       const full = path.join(tmp, name)
       if (!isSafeToolsxTempDir(full)) continue
       try {
@@ -208,6 +245,44 @@ export function registerFilesIpc(): void {
     return payload
   })
 
+  ipcMain.handle(IpcChannels.FilesOpenPdf, async (_event: IpcMainInvokeEvent) => {
+    const result = await dialog.showOpenDialog({
+      title: '选择 PDF 文件',
+      properties: ['openFile'],
+      filters: [
+        { name: 'PDF', extensions: ['pdf'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      const payload: OpenPdfResult = { canceled: true }
+      return payload
+    }
+
+    const payload: OpenPdfResult = { canceled: false, filePath: result.filePaths[0] }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesOpenPdfs, async (_event: IpcMainInvokeEvent) => {
+    const result = await dialog.showOpenDialog({
+      title: '选择 PDF 文件（可多选）',
+      properties: ['openFile', 'multiSelections'],
+      filters: [
+        { name: 'PDF', extensions: ['pdf'] },
+        { name: 'All Files', extensions: ['*'] }
+      ]
+    })
+
+    if (result.canceled || result.filePaths.length === 0) {
+      const payload: OpenPdfsResult = { canceled: true }
+      return payload
+    }
+
+    const payload: OpenPdfsResult = { canceled: false, filePaths: result.filePaths }
+    return payload
+  })
+
   ipcMain.handle(IpcChannels.FilesSaveImage, async (_event: IpcMainInvokeEvent, args: SaveImageArgs) => {
     const defaultName = args.defaultName ?? 'output.png'
 
@@ -224,6 +299,40 @@ export function registerFilesIpc(): void {
 
     await fs.copyFile(args.sourcePath, result.filePath)
     const payload: SaveImageResult = { canceled: false, savedPath: result.filePath }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesSavePdf, async (_event: IpcMainInvokeEvent, args: SavePdfArgs) => {
+    const defaultName = args.defaultName ?? 'output.pdf'
+
+    const result = await dialog.showSaveDialog({
+      title: '保存 PDF',
+      defaultPath: path.join(os.homedir(), defaultName),
+      filters: [{ name: 'PDF', extensions: ['pdf'] }]
+    })
+
+    if (result.canceled || !result.filePath) {
+      const payload: SavePdfResult = { canceled: true }
+      return payload
+    }
+
+    await fs.copyFile(args.sourcePath, result.filePath)
+    const payload: SavePdfResult = { canceled: false, savedPath: result.filePath }
+    return payload
+  })
+
+  ipcMain.handle(IpcChannels.FilesWriteTempFile, async (_event: IpcMainInvokeEvent, args: WriteTempFileArgs) => {
+    if (!isSafeToolsxTempPrefix(args.dirPrefix)) throw new Error('非法的临时目录前缀')
+    if (!args.name || args.name.includes('..') || args.name.includes('/') || args.name.includes('\\')) throw new Error('非法的文件名')
+
+    const dir = path.join(os.tmpdir(), args.dirPrefix)
+    await fs.mkdir(dir, { recursive: true })
+
+    const buf = Buffer.from(args.base64, 'base64')
+    const filePath = path.join(dir, args.name)
+    await fs.writeFile(filePath, buf)
+
+    const payload: WriteTempFileResult = { filePath }
     return payload
   })
 

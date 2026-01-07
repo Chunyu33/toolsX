@@ -38,6 +38,12 @@ export const tools: ToolDefinition[] = [
     route: '/tool/qr-tool'
   },
   {
+    id: 'pdf-tool',
+    title: 'PDF 助手',
+    description: 'PDF 合并、拆分、按页导出图片（本地离线）',
+    route: '/tool/pdf-tool'
+  },
+  {
     id: 'json-formatter',
     title: 'JSON 格式化',
     description: '快速格式化/压缩/校验 JSON，并一键复制结果',

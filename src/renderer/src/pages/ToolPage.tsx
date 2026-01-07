@@ -8,6 +8,7 @@ import ImageCompressPage from '../features/imageCompress/ImageCompressPage'
 import TimestampConvertPage from '../features/timestampConvert/TimestampConvertPage'
 import Base64ToolPage from '../features/base64Tool/Base64ToolPage'
 import QrToolPage from '../features/qrTool/QrToolPage'
+import PdfToolPage from '../features/pdfTool/PdfToolPage'
 import JsonFormatterPage from '../features/jsonFormatter/JsonFormatterPage'
 
 export default function ToolPage() {
@@ -32,6 +33,8 @@ export default function ToolPage() {
           <Base64ToolPage />
         ) : toolId === 'qr-tool' ? (
           <QrToolPage />
+        ) : toolId === 'pdf-tool' ? (
+          <PdfToolPage />
         ) : toolId === 'json-formatter' ? (
           <JsonFormatterPage />
         ) : (

@@ -14,9 +14,13 @@ export type ToolsXApi = {
   files: {
     openVideo: () => Promise<{ canceled: boolean; filePath?: string }>
     saveGif: (args: { sourcePath: string }) => Promise<{ canceled: boolean; savedPath?: string }>
+    openPdf: () => Promise<{ canceled: boolean; filePath?: string }>
+    openPdfs: () => Promise<{ canceled: boolean; filePaths?: string[] }>
+    savePdf: (args: { sourcePath: string; defaultName?: string }) => Promise<{ canceled: boolean; savedPath?: string }>
     openImage: () => Promise<{ canceled: boolean; filePath?: string }>
     openImages: () => Promise<{ canceled: boolean; filePaths?: string[] }>
     saveImage: (args: { sourcePath: string; defaultName?: string }) => Promise<{ canceled: boolean; savedPath?: string }>
+    writeTempFile: (args: { dirPrefix: string; name: string; base64: string }) => Promise<{ filePath: string }>
     saveZip: (args: {
       entries: Array<{ sourcePath: string; name: string }>
       defaultName?: string
@@ -53,6 +57,15 @@ export type ToolsXApi = {
           }
     ) => Promise<{ outputPath: string; format: 'png' | 'jpeg' | 'webp' | 'avif' | 'gif' | 'ico'; quality?: number; sizeBytes: number }>
   }
+
+  pdf: {
+    merge: (args: { inputPaths: string[] }) => Promise<{ outputPath: string; tempDir: string }>
+    split: (args: {
+      inputPath: string
+      mode: 'range' | 'splitAll'
+      ranges?: Array<{ start: number; end: number }>
+    }) => Promise<{ outputPaths: string[]; tempDir: string }>
+  }
 }
 
 export const api: ToolsXApi = {
@@ -68,9 +81,13 @@ export const api: ToolsXApi = {
   files: {
     openVideo: () => ipcRenderer.invoke(IpcChannels.FilesOpenVideo),
     saveGif: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveGif, args),
+    openPdf: () => ipcRenderer.invoke(IpcChannels.FilesOpenPdf),
+    openPdfs: () => ipcRenderer.invoke(IpcChannels.FilesOpenPdfs),
+    savePdf: (args) => ipcRenderer.invoke(IpcChannels.FilesSavePdf, args),
     openImage: () => ipcRenderer.invoke(IpcChannels.FilesOpenImage),
     openImages: () => ipcRenderer.invoke(IpcChannels.FilesOpenImages),
     saveImage: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveImage, args),
+    writeTempFile: (args) => ipcRenderer.invoke(IpcChannels.FilesWriteTempFile, args),
     saveZip: (args) => ipcRenderer.invoke(IpcChannels.FilesSaveZip, args),
     cleanupTempImages: (args) => ipcRenderer.invoke(IpcChannels.FilesCleanupTempImages, args),
     getFileInfo: (args) => ipcRenderer.invoke(IpcChannels.FilesGetFileInfo, args)
@@ -80,6 +97,10 @@ export const api: ToolsXApi = {
   },
   imageConvert: {
     convert: (args) => ipcRenderer.invoke(IpcChannels.ImageConvertConvert, args)
+  },
+  pdf: {
+    merge: (args) => ipcRenderer.invoke(IpcChannels.PdfMerge, args),
+    split: (args) => ipcRenderer.invoke(IpcChannels.PdfSplit, args)
   }
 }
 

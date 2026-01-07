@@ -1,5 +1,8 @@
 import { BrowserWindow, shell } from 'electron'
-import { join } from 'path'
+import { dirname, join } from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 export async function createMainWindow(): Promise<BrowserWindow> {
   const win = new BrowserWindow({

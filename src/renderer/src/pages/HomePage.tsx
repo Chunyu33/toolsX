@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Binary, Braces, Clock, FileImage, FileJson, ImageDown, QrCode, Video } from 'lucide-react'
+import { Binary, Braces, Clock, FileImage, FileJson, FileText, ImageDown, QrCode, Video } from 'lucide-react'
 import Header from '../components/Header'
 import { tools } from '../features/tools/data'
 
@@ -12,6 +12,7 @@ function getToolIcon(toolId: string) {
   if (toolId === 'timestamp-convert') return Clock
   if (toolId === 'base64-tool') return Binary
   if (toolId === 'qr-tool') return QrCode
+  if (toolId === 'pdf-tool') return FileText
   if (toolId === 'json-formatter') return Braces
   return FileJson
 }
