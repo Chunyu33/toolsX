@@ -3,6 +3,7 @@ import { Copy, Download, Eraser, Image as ImageIcon, Wand2 } from 'lucide-react'
 import QRCode from 'qrcode'
 import jsQR from 'jsqr'
 import Toast from '../../components/Toast'
+import LoadingOverlay from '../../components/LoadingOverlay'
 
 function stripDataUrlPrefix(maybeDataUrl: string): { base64: string; mime?: string } {
   const s = maybeDataUrl.trim()
@@ -70,6 +71,8 @@ export default function QrToolPage() {
     setToastOpen(true)
   }
 
+  const [busy, setBusy] = useState(false)
+
   // 生成
   const [genInput, setGenInput] = useState('')
   const [qrDataUrl, setQrDataUrl] = useState<string>('')
@@ -92,6 +95,7 @@ export default function QrToolPage() {
   const generateQr = async () => {
     // 说明：二维码生成使用 qrcode（纯前端），不会经过主进程
     setGenError(null)
+    setBusy(true)
     try {
       const text = genInput.trim()
       if (!text) throw new Error('请输入 URL 或文本')
@@ -109,6 +113,8 @@ export default function QrToolPage() {
       setQrDataUrl(url)
     } catch (e) {
       setGenError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -153,6 +159,7 @@ export default function QrToolPage() {
     setScanError(null)
     setScanText('')
 
+    setBusy(true)
     try {
       const img = await loadImage(dataUrl)
       const canvas = canvasRef.current
@@ -180,23 +187,30 @@ export default function QrToolPage() {
       setScanText(code.data)
     } catch (e) {
       setScanError(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
   const onPickQrImage = async (file: File) => {
     setScanError(null)
+    setBusy(true)
     try {
       const dataUrl = await fileToDataUrl(file)
       setScanPreview(dataUrl)
       await scanFromDataUrl(dataUrl)
     } catch (e) {
       setScanError(e instanceof Error ? e.message : String(e))
+    } finally {
+      // 说明：scanFromDataUrl 内部也会更新 busy，这里兜底一次，避免异常路径 busy 卡住。
+      setBusy(false)
     }
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-6">
+    <div className="relative mx-auto max-w-6xl px-6 py-6">
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
+      <LoadingOverlay open={busy} text="处理中..." />
 
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
@@ -253,6 +267,7 @@ export default function QrToolPage() {
                 <button
                   className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
                   onClick={generateQr}
+                  disabled={busy}
                   type="button"
                 >
                   <Wand2 className="h-4 w-4" />
@@ -265,6 +280,7 @@ export default function QrToolPage() {
                     setQrDataUrl('')
                     setGenError(null)
                   }}
+                  disabled={busy}
                   type="button"
                 >
                   <Eraser className="h-4 w-4" />

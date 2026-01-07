@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Download, Film, Loader2, Play, Wand2 } from 'lucide-react'
 import { toLocalfileUrl } from './utils'
+import LoadingOverlay from '../../components/LoadingOverlay'
 
 type Segment = {
   startSeconds: number
@@ -108,7 +109,8 @@ export default function VideoToGifPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-6">
+    <div className="relative mx-auto max-w-6xl px-6 py-6">
+      <LoadingOverlay open={busy} text="处理中..." />
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -341,6 +343,7 @@ export default function VideoToGifPage() {
                     <button
                       className="inline-flex items-center gap-1.5 rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
                       onClick={async () => {
+                        setBusy(true)
                         try {
                           const res = await window.toolsx.files.saveGif({ sourcePath: gifPath })
                           if (!res.canceled && res.savedPath) {
@@ -349,8 +352,11 @@ export default function VideoToGifPage() {
                           }
                         } catch (e) {
                           setErrorText(e instanceof Error ? e.message : String(e))
+                        } finally {
+                          setBusy(false)
                         }
                       }}
+                      disabled={busy}
                     >
                       <Download className="h-3.5 w-3.5" />
                       保存 GIF

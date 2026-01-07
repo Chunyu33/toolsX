@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import { Download, Eraser, FilePlus2, Files, Image as ImageIcon, Merge, Scissors } from 'lucide-react'
 import Toast from '../../components/Toast'
+import LoadingOverlay from '../../components/LoadingOverlay'
 import { getBasenameNoExt, getDirname } from '../../utils/filePath'
 import { toLocalfileUrl } from '../videoToGif/utils'
 
@@ -309,8 +310,9 @@ export default function PdfToolPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-6">
+    <div className="relative mx-auto max-w-6xl px-6 py-6">
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
+      <LoadingOverlay open={busy} text="PDF 处理中..." />
 
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">

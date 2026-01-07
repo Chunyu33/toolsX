@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Download, FileImage, Loader2, Wand2 } from 'lucide-react'
 import { toLocalfileUrl } from '../videoToGif/utils'
 import ImagePreviewModal from '../../components/ImagePreviewModal'
+import LoadingOverlay from '../../components/LoadingOverlay'
 import { getBasenameNoExt, getDirname } from '../../utils/filePath'
 
 import type { ToolsXApi } from '../../../../preload/bridge'
@@ -93,6 +94,7 @@ export default function ImageConvertPage() {
 
   const saveZip = async () => {
     if (outputs.length <= 1) return
+    setBusy(true)
     try {
       const entries = outputs.map((it, idx) => {
         const ext = it.outputMeta?.format === 'jpeg' ? 'jpg' : it.outputMeta?.format
@@ -122,6 +124,8 @@ export default function ImageConvertPage() {
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
@@ -198,6 +202,7 @@ export default function ImageConvertPage() {
 
   const saveOutput = async () => {
     if (!activeItem?.outputPath) return
+    setBusy(true)
     try {
       const ext = activeItem.outputMeta?.format ?? format
       const res = await window.toolsx.files.saveImage({
@@ -210,13 +215,16 @@ export default function ImageConvertPage() {
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
   const showQuality = format === 'jpeg' || format === 'webp' || format === 'avif'
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-6">
+    <div className="relative mx-auto max-w-6xl px-6 py-6">
+      <LoadingOverlay open={busy} text="处理中..." />
       <ImagePreviewModal
         open={previewOpen}
         src={previewSrc}

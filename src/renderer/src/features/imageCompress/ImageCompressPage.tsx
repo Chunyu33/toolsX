@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { Download, FileImage, Loader2, Sparkles } from 'lucide-react'
 import { toLocalfileUrl } from '../videoToGif/utils'
 import ImagePreviewModal from '../../components/ImagePreviewModal'
+import LoadingOverlay from '../../components/LoadingOverlay'
 import { getBasenameNoExt, getDirname } from '../../utils/filePath'
 
 function collectTempDirsFromItems(items: Array<{ outputPath?: string }>): string[] {
@@ -143,11 +144,12 @@ export default function ImageCompressPage() {
 
   const saveOutput = async () => {
     if (!activeItem?.outputPath) return
+    setBusy(true)
     try {
-      const ext = activeItem.outputMeta?.format ?? 'webp'
+      const ext = activeItem.outputMeta?.format ?? 'jpg'
       const res = await window.toolsx.files.saveImage({
         sourcePath: activeItem.outputPath,
-        defaultName: `compressed.${ext === 'jpeg' ? 'jpg' : ext}`
+        defaultName: `output.${ext === 'jpeg' ? 'jpg' : ext}`
       })
       if (!res.canceled && res.savedPath) {
         setErrorText(null)
@@ -155,11 +157,14 @@ export default function ImageCompressPage() {
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
   const saveZip = async () => {
     if (outputs.length <= 1) return
+    setBusy(true)
     try {
       const entries = outputs.map((it, idx) => {
         const ext = it.outputMeta?.format === 'jpeg' ? 'jpg' : it.outputMeta?.format
@@ -189,11 +194,14 @@ export default function ImageCompressPage() {
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
+    } finally {
+      setBusy(false)
     }
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-6">
+    <div className="relative mx-auto max-w-6xl px-6 py-6">
+      <LoadingOverlay open={busy} text="处理中..." />
       <ImagePreviewModal
         open={previewOpen}
         src={previewSrc}

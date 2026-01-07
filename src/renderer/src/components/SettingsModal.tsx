@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Info, Laptop, Moon, Settings, Sun, X } from 'lucide-react'
 import { getStoredThemeMode, setStoredThemeMode, type ThemeMode } from '../theme/theme'
+import Toast from './Toast'
 
 type Props = {
   triggerClassName?: string
@@ -35,6 +36,15 @@ export default function SettingsModal({ triggerClassName }: Props) {
   const [nav, setNav] = useState<NavKey>('general')
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => getStoredThemeMode())
 
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastText, setToastText] = useState('')
+  const [cleanupBusy, setCleanupBusy] = useState(false)
+
+  const showToast = (text: string) => {
+    setToastText(text)
+    setToastOpen(true)
+  }
+
   const title = useMemo(() => {
     return nav === 'general' ? '通用' : '关于'
   }, [nav])
@@ -50,6 +60,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <Dialog.Trigger asChild>
         <button
           className={
@@ -118,6 +129,34 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       <ThemeChip value="system" current={themeMode} onSelect={setMode} />
                       <ThemeChip value="light" current={themeMode} onSelect={setMode} />
                       <ThemeChip value="dark" current={themeMode} onSelect={setMode} />
+                    </div>
+                  </div>
+
+                  <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    <div className="text-sm font-semibold text-app-text">临时文件</div>
+                    <div className="mt-1 text-xs text-app-muted">
+                      清理系统临时目录下由 ToolsX 生成的临时文件（仅清理 toolsx-imgc-* / toolsx-pdf-*，主进程会做严格白名单校验）。
+                    </div>
+
+                    <div className="mt-3">
+                      <button
+                        className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+                        disabled={cleanupBusy}
+                        onClick={async () => {
+                          setCleanupBusy(true)
+                          try {
+                            const res = await window.toolsx.files.cleanupTempImages({})
+                            showToast(`已清理临时目录：${res.deletedCount} 个目录`)
+                          } catch (e) {
+                            showToast(e instanceof Error ? e.message : String(e))
+                          } finally {
+                            setCleanupBusy(false)
+                          }
+                        }}
+                        type="button"
+                      >
+                        清除临时目录文件
+                      </button>
                     </div>
                   </div>
 

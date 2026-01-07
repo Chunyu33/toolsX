@@ -121,12 +121,13 @@ function isSafeToolsxTempDir(dir: string): boolean {
   if (!target.startsWith(tmp + '/')) return false
 
   const base = path.basename(dir)
-  return base.startsWith('toolsx-imgc-') || base.startsWith('toolsx-pdf-')
+  return base.startsWith('toolsx')
 }
 
 function isSafeToolsxTempPrefix(prefix: string): boolean {
-  // 说明：写临时文件也必须非常保守，只允许 toolsx-pdf- 和 toolsx-imgc- 这类前缀。
-  return prefix.startsWith('toolsx-pdf-') || prefix.startsWith('toolsx-imgc-')
+  // 说明：写临时文件也必须非常保守，只允许 toolsx- 前缀。
+  // 仍然会强制写入 os.tmpdir() 下，避免写入任意目录。
+  return prefix.startsWith('toolsx-')
 }
 
 async function cleanupTempImageDirs(args: CleanupTempImagesArgs): Promise<CleanupTempImagesResult> {
@@ -147,13 +148,13 @@ async function cleanupTempImageDirs(args: CleanupTempImagesArgs): Promise<Cleanu
     return { deletedCount }
   }
 
-  // 说明：兜底策略：清理系统 temp 下所有 toolsx-imgc-* 目录
+  // 说明：兜底策略：清理系统 temp 下所有 toolsx* 目录
   // 注意：只按前缀清理，不做更激进的匹配，避免误删
   try {
     const tmp = os.tmpdir()
     const list = await fs.readdir(tmp)
     for (const name of list) {
-      if (!name.startsWith('toolsx-imgc-') && !name.startsWith('toolsx-pdf-')) continue
+      if (!name.startsWith('toolsx')) continue
       const full = path.join(tmp, name)
       if (!isSafeToolsxTempDir(full)) continue
       try {
