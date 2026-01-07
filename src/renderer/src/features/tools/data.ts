@@ -28,8 +28,14 @@ export const tools: ToolDefinition[] = [
   {
     id: 'base64-tool',
     title: 'Base64 工具',
-    description: '支持文本与图片的 Base64 互转（完全离线）',
+    description: '支持文本与图片的 Base64 互转',
     route: '/tool/base64-tool'
+  },
+  {
+    id: 'qr-tool',
+    title: '二维码生成与识别',
+    description: '输入 URL/文本生成二维码，或上传二维码图片进行解析',
+    route: '/tool/qr-tool'
   },
   {
     id: 'json-formatter',
