@@ -16,9 +16,19 @@ type ConvertArgs = {
 function getFfmpegPath(): string {
   // ffmpeg-static resolves to an absolute binary path at runtime.
   const require = createRequire(import.meta.url)
-  const p = require('ffmpeg-static') as string
-  if (!p) throw new Error('ffmpeg-static not resolved')
-  return p
+  try {
+    const p = require('ffmpeg-static') as string
+    if (!p) throw new Error('ffmpeg-static returned empty path')
+    // 说明：打包后 ffmpeg.exe 往往位于 app.asar 内（虚拟路径），该路径无法被 child_process.spawn 直接执行，会导致 ENOENT。
+    // TODO: 若后续替换为内置 ffmpeg 或其它实现，可移除此处对 asar.unpacked 的兼容。
+    if (app.isPackaged && p.includes('app.asar')) {
+      return p.replace('app.asar', 'app.asar.unpacked')
+    }
+    return p
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    throw new Error(`ffmpeg-static resolve failed: ${msg}`)
+  }
 }
 
 function clampSeconds(v: number): number {
@@ -52,6 +62,16 @@ export async function convertVideoSegmentToGif({ inputPath, startSeconds, endSec
   const outPath = path.join(tmpDir, 'out.gif')
 
   const ffmpeg = getFfmpegPath()
+  try {
+    await fs.access(ffmpeg)
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e)
+    throw new Error(
+      `ffmpeg-static binary not accessible: ${ffmpeg}. ` +
+        `isPackaged=${String(app.isPackaged)} appPath=${app.getAppPath()} resourcesPath=${process.resourcesPath}. ` +
+        `accessError=${msg}`
+    )
+  }
   const duration = end - start
 
   // Two-pass palette generation for better quality.

@@ -107,7 +107,11 @@ export default function VideoToGifPage() {
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e)
       if (msg.includes('ffmpeg-static')) {
-        setErrorText('缺少依赖 ffmpeg-static：请在项目根目录执行 npm install（安装后重启 npm run dev）。')
+        if (window.location.protocol === 'file:') {
+          setErrorText(msg)
+        } else {
+          setErrorText('缺少依赖 ffmpeg-static：请在项目根目录执行 npm install（安装后重启 npm run dev）。')
+        }
       } else {
         setErrorText(msg)
       }

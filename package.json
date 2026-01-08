@@ -9,8 +9,8 @@
   "scripts": {
     "dev": "electron-vite dev",
     "build": "electron-vite build",
-    "dist": "electron-vite build && electron-builder",
-    "dist:publish": "electron-vite build && electron-builder --publish always",
+    "make": "electron-vite build && electron-builder",
+    "make:publish": "electron-vite build && electron-builder --publish always",
     "preview": "electron-vite preview",
     "postinstall": "electron-builder install-app-deps",
     "typecheck": "tsc -p tsconfig.json --noEmit"
@@ -23,7 +23,11 @@
     },
     "files": [
       "dist/**",
-      "package.json"
+      "package.json",
+      "node_modules/ffmpeg-static/**"
+    ],
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/**"
     ],
     "extraResources": [
       {
@@ -51,7 +55,8 @@
             "x64"
           ]
         }
-      ]
+      ],
+      "artifactName": "${productName}-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
