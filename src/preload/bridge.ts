@@ -5,6 +5,15 @@ export type ToolsXApi = {
   system: {
     ping: () => Promise<string>
   }
+
+  updater: {
+    getVersion: () => Promise<{ version: string }>
+    getStatus: () => Promise<any>
+    checkForUpdates: () => Promise<any>
+    downloadUpdate: () => Promise<any>
+    quitAndInstall: () => Promise<void>
+    onStatusChanged: (cb: (status: any) => void) => () => void
+  }
   windowControls: {
     minimize: () => Promise<void>
     toggleMaximize: () => Promise<void>
@@ -92,6 +101,19 @@ export type ToolsXApi = {
 export const api: ToolsXApi = {
   system: {
     ping: () => ipcRenderer.invoke(IpcChannels.SystemPing)
+  },
+
+  updater: {
+    getVersion: () => ipcRenderer.invoke(IpcChannels.UpdaterGetVersion),
+    getStatus: () => ipcRenderer.invoke(IpcChannels.UpdaterGetStatus),
+    checkForUpdates: () => ipcRenderer.invoke(IpcChannels.UpdaterCheckForUpdates),
+    downloadUpdate: () => ipcRenderer.invoke(IpcChannels.UpdaterDownloadUpdate),
+    quitAndInstall: () => ipcRenderer.invoke(IpcChannels.UpdaterQuitAndInstall),
+    onStatusChanged: (cb) => {
+      const handler = (_: unknown, status: any) => cb(status)
+      ipcRenderer.on(IpcChannels.UpdaterStatusChanged, handler)
+      return () => ipcRenderer.off(IpcChannels.UpdaterStatusChanged, handler)
+    }
   },
   windowControls: {
     minimize: () => ipcRenderer.invoke(IpcChannels.WindowMinimize),

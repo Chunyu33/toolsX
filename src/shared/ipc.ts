@@ -4,6 +4,14 @@ export const IpcChannels = {
   WindowToggleMaximize: 'window:toggleMaximize',
   WindowClose: 'window:close',
   WindowIsMaximized: 'window:isMaximized',
+
+  UpdaterGetVersion: 'updater:getVersion',
+  UpdaterGetStatus: 'updater:getStatus',
+  UpdaterCheckForUpdates: 'updater:checkForUpdates',
+  UpdaterDownloadUpdate: 'updater:downloadUpdate',
+  UpdaterQuitAndInstall: 'updater:quitAndInstall',
+  UpdaterStatusChanged: 'updater:statusChanged',
+
   FilesOpenVideo: 'files:openVideo',
   FilesSaveGif: 'files:saveGif',
   FilesOpenPdf: 'files:openPdf',

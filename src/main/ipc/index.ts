@@ -6,6 +6,7 @@ import { registerVideoToGifIpc } from './videoToGif'
 import { registerImageConvertIpc } from './imageConvert'
 import { registerImageCropIpc } from './imageCrop'
 import { registerSvgToolIpc } from './svgTool'
+import { registerUpdaterIpc } from './updater'
 // @ts-ignore
 import { registerPdfIpc } from './pdf'
 
@@ -15,6 +16,12 @@ export function registerIpcHandlers(): void {
   ipcMain.removeHandler('window:toggleMaximize')
   ipcMain.removeHandler('window:close')
   ipcMain.removeHandler('window:isMaximized')
+
+  ipcMain.removeHandler('updater:getVersion')
+  ipcMain.removeHandler('updater:getStatus')
+  ipcMain.removeHandler('updater:checkForUpdates')
+  ipcMain.removeHandler('updater:downloadUpdate')
+  ipcMain.removeHandler('updater:quitAndInstall')
   ipcMain.removeHandler('files:openVideo')
   ipcMain.removeHandler('files:saveGif')
   ipcMain.removeHandler('files:openPdf')
@@ -37,6 +44,7 @@ export function registerIpcHandlers(): void {
 
   registerSystemIpc()
   registerWindowIpc()
+  registerUpdaterIpc()
   registerFilesIpc()
   registerVideoToGifIpc()
   registerImageConvertIpc()
