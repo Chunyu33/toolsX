@@ -26,6 +26,12 @@ export const tools: ToolDefinition[] = [
     route: '/tool/image-crop'
   },
   {
+    id: 'svg-tool',
+    title: 'SVG 转换',
+    description: '编辑 SVG 并预览，导出为 PNG/JPG/WebP（支持尺寸与清晰度）',
+    route: '/tool/svg-tool'
+  },
+  {
     id: 'timestamp-convert',
     title: '时间戳转换',
     description: '秒 / 毫秒互转，实时显示当前系统时间',

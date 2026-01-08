@@ -66,6 +66,19 @@ export type ToolsXApi = {
     }) => Promise<{ outputPath: string; tempDir: string; width: number; height: number }>
   }
 
+  svgTool: {
+    openSvg: () => Promise<{ canceled: boolean; filePath?: string; text?: string }>
+    saveSvg: (args: { text: string; defaultName?: string }) => Promise<{ canceled: boolean; savedPath?: string }>
+    render: (args: {
+      svgText: string
+      format: 'png' | 'jpeg' | 'webp'
+      width?: number
+      height?: number
+      background?: { r: number; g: number; b: number }
+      density?: number
+    }) => Promise<{ outputPath: string; tempDir: string; sizeBytes: number }>
+  }
+
   pdf: {
     merge: (args: { inputPaths: string[] }) => Promise<{ outputPath: string; tempDir: string }>
     split: (args: {
@@ -108,6 +121,11 @@ export const api: ToolsXApi = {
   },
   imageCrop: {
     process: (args) => ipcRenderer.invoke(IpcChannels.ImageCropProcess, args)
+  },
+  svgTool: {
+    openSvg: () => ipcRenderer.invoke(IpcChannels.SvgToolOpenSvg),
+    saveSvg: (args) => ipcRenderer.invoke(IpcChannels.SvgToolSaveSvg, args),
+    render: (args) => ipcRenderer.invoke(IpcChannels.SvgToolRender, args)
   },
   pdf: {
     merge: (args) => ipcRenderer.invoke(IpcChannels.PdfMerge, args),

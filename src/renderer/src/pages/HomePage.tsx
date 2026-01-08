@@ -10,6 +10,7 @@ function getToolIcon(toolId: string) {
   if (toolId === 'image-convert') return ImageDown
   if (toolId === 'image-compress') return FileImage
   if (toolId === 'image-crop') return Crop
+  if (toolId === 'svg-tool') return FileImage
   if (toolId === 'timestamp-convert') return Clock
   if (toolId === 'base64-tool') return Binary
   if (toolId === 'qr-tool') return QrCode

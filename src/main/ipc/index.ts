@@ -5,6 +5,7 @@ import { registerFilesIpc } from './files'
 import { registerVideoToGifIpc } from './videoToGif'
 import { registerImageConvertIpc } from './imageConvert'
 import { registerImageCropIpc } from './imageCrop'
+import { registerSvgToolIpc } from './svgTool'
 // @ts-ignore
 import { registerPdfIpc } from './pdf'
 
@@ -28,6 +29,9 @@ export function registerIpcHandlers(): void {
   ipcMain.removeHandler('videoToGif:convert')
   ipcMain.removeHandler('imageConvert:convert')
   ipcMain.removeHandler('imageCrop:process')
+  ipcMain.removeHandler('svgTool:openSvg')
+  ipcMain.removeHandler('svgTool:saveSvg')
+  ipcMain.removeHandler('svgTool:render')
   ipcMain.removeHandler('pdf:merge')
   ipcMain.removeHandler('pdf:split')
 
@@ -37,5 +41,6 @@ export function registerIpcHandlers(): void {
   registerVideoToGifIpc()
   registerImageConvertIpc()
   registerImageCropIpc()
+  registerSvgToolIpc()
   registerPdfIpc()
 }

@@ -19,6 +19,9 @@ export const IpcChannels = {
   VideoToGifConvert: 'videoToGif:convert',
   ImageConvertConvert: 'imageConvert:convert',
   ImageCropProcess: 'imageCrop:process',
+  SvgToolOpenSvg: 'svgTool:openSvg',
+  SvgToolSaveSvg: 'svgTool:saveSvg',
+  SvgToolRender: 'svgTool:render',
   PdfMerge: 'pdf:merge',
   PdfSplit: 'pdf:split'
 } as const
