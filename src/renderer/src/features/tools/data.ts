@@ -22,7 +22,7 @@ export const tools: ToolDefinition[] = [
   {
     id: 'image-crop',
     title: '图片裁剪',
-    description: '矩形裁剪 + 圆角裁剪（适合做 App Icon），本地离线处理',
+    description: '矩形裁剪 + 圆角裁剪（适合做 App Icon）',
     route: '/tool/image-crop'
   },
   {

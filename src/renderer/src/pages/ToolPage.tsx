@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ChevronLeft } from 'lucide-react'
 import Header from '../components/Header'
 import { tools } from '../features/tools/data'
 import VideoToGifPage from '../features/videoToGif/VideoToGifPage'
@@ -15,6 +16,7 @@ import JsonFormatterPage from '../features/jsonFormatter/JsonFormatterPage'
 
 export default function ToolPage() {
   const { toolId } = useParams()
+  const navigate = useNavigate()
 
   const tool = useMemo(() => tools.find((t) => t.id === toolId), [toolId])
 
@@ -22,7 +24,16 @@ export default function ToolPage() {
     <div className="app-gradient-bg flex h-full min-h-0 flex-col">
       <Header title={tool?.title ?? '工具'} />
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <button
+        className="fixed left-3 top-[20%] z-30 rounded-full bg-brand-600 p-3 text-white shadow-lg shadow-brand-900/10 hover:bg-brand-700 active:translate-y-[1px]"
+        onClick={() => navigate('/')}
+        title="返回首页"
+        type="button"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+
+      <div key={toolId} className="page-enter min-h-0 flex-1 overflow-y-auto">
         {toolId === 'video-to-gif' ? (
           <VideoToGifPage />
         ) : toolId === 'image-convert' ? (

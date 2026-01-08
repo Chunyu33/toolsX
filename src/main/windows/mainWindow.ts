@@ -1,8 +1,15 @@
-import { BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+
+function getAppIconPath() {
+  // dev: 项目根目录下的 src/assets
+  // packaged: electron-builder extraResources => resources/assets
+  if (app.isPackaged) return join(process.resourcesPath, 'assets', 'app.ico')
+  return join(process.cwd(), 'src', 'assets', 'app.ico')
+}
 
 export async function createMainWindow(): Promise<BrowserWindow> {
   const win = new BrowserWindow({
@@ -14,6 +21,7 @@ export async function createMainWindow(): Promise<BrowserWindow> {
     show: false,
     titleBarStyle: 'hiddenInset',
     autoHideMenuBar: true,
+    icon: getAppIconPath(),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       contextIsolation: true,

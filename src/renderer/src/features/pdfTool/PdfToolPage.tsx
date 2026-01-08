@@ -318,7 +318,7 @@ export default function PdfToolPage() {
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">PDF 助手</div>
-            <div className="mt-1 text-sm text-app-muted">PDF 合并、拆分、按页导出图片（本地离线）</div>
+            <div className="mt-1 text-sm text-app-muted">PDF 合并、拆分、按页导出图片</div>
           </div>
 
           <div className="flex items-center gap-2">

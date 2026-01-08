@@ -12,49 +12,49 @@ body {
 }
 
 :root {
-  --app-bg: 210 30% 98%;
+  --app-bg: 102 40% 98%;
   --app-surface: 0 0% 100%;
-  --app-surface-2: 210 30% 96%;
-  --app-border: 215 20% 86%;
+  --app-surface-2: 102 35% 96%;
+  --app-border: 102 18% 86%;
   --app-text: 215 25% 14%;
   --app-muted: 215 12% 45%;
 
   /* 说明：全局背景渐变（与主题色相协调），用于 HomePage / ToolPage 等页面容器 */
-  --app-grad-1: 160 70% 96%;
+  --app-grad-1: 102 65% 96%;
   --app-grad-2: 210 30% 98%;
-  --app-grad-3: 160 55% 92%;
+  --app-grad-3: 102 55% 92%;
 
-  --brand-50: 160 45% 96%;
-  --brand-100: 160 45% 90%;
-  --brand-200: 160 45% 80%;
-  --brand-300: 160 55% 70%;
-  --brand-400: 160 65% 55%;
-  --brand-500: 160 70% 45%;
-  --brand-600: 160 70% 38%;
-  --brand-700: 160 75% 30%;
+  --brand-50: 102 65% 96%;
+  --brand-100: 102 60% 90%;
+  --brand-200: 102 55% 82%;
+  --brand-300: 102 52% 74%;
+  --brand-400: 102 50% 66%;
+  --brand-500: 102 51% 74%;
+  --brand-600: 102 50% 48%;
+  --brand-700: 102 55% 38%;
 }
 
 .dark {
-  --app-bg: 210 18% 10%;
-  --app-surface: 210 16% 13%;
-  --app-surface-2: 210 16% 16%;
-  --app-border: 210 16% 20%;
+  --app-bg: 102 14% 10%;
+  --app-surface: 102 12% 13%;
+  --app-surface-2: 102 12% 16%;
+  --app-border: 102 12% 20%;
   --app-text: 210 20% 96%;
   --app-muted: 210 12% 70%;
 
   /* 说明：暗色模式下的渐变更克制，避免大面积发灰或脏 */
   --app-grad-1: 210 18% 10%;
   --app-grad-2: 210 18% 9%;
-  --app-grad-3: 160 30% 12%;
+  --app-grad-3: 102 30% 12%;
 
-  --brand-50: 160 35% 12%;
-  --brand-100: 160 40% 16%;
-  --brand-200: 160 45% 22%;
-  --brand-300: 160 50% 28%;
-  --brand-400: 160 60% 38%;
-  --brand-500: 160 65% 48%;
-  --brand-600: 160 70% 58%;
-  --brand-700: 160 75% 68%;
+  --brand-50: 102 25% 12%;
+  --brand-100: 102 28% 16%;
+  --brand-200: 102 32% 22%;
+  --brand-300: 102 36% 28%;
+  --brand-400: 102 42% 38%;
+  --brand-500: 102 48% 48%;
+  --brand-600: 102 55% 60%;
+  --brand-700: 102 60% 70%;
 }
 
 body {
@@ -111,21 +111,22 @@ body {
 *::-webkit-scrollbar {
   width: 10px;
   height: 10px;
+  border-radius: 20px;
 }
 
 *::-webkit-scrollbar-track {
-  background: transparent;
+  background: hsl(var(--app-surface) / 0.35);
+  border-radius: 20px !important;
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: hsl(var(--app-border));
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background-clip: content-box;
+  background: transparent;
+  border-radius: 20px !important;
+  box-shadow: inset 0 0 0 2px hsl(var(--app-border));
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: hsl(var(--brand-300));
+  box-shadow: inset 0 0 0 2px hsl(var(--brand-300));
 }
 
 .titlebar {

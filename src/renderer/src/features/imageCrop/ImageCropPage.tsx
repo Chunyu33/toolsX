@@ -70,6 +70,20 @@ export default function ImageCropPage() {
     return toLocalfileUrl(inputPath)
   }, [inputPath])
 
+  useEffect(() => {
+    if (mode !== 'round') return
+    if (!previewUrl) return
+    const raf = requestAnimationFrame(() => {
+      try {
+        const box = getImageBox()
+        setCropRect({ x: 0, y: 0, w: box.width, h: box.height })
+      } catch {
+        // ignore
+      }
+    })
+    return () => cancelAnimationFrame(raf)
+  }, [mode, previewUrl])
+
   const outputUrl = useMemo(() => {
     if (!outputPath) return ''
     return toLocalfileUrl(outputPath)
@@ -147,6 +161,7 @@ export default function ImageCropPage() {
   const onPointerDown = (e: React.PointerEvent) => {
     if (!inputPath) return
     if (busy) return
+    if (mode === 'round') return
 
     const target = e.target as HTMLElement
     // 说明：
@@ -173,6 +188,7 @@ export default function ImageCropPage() {
   }
 
   const onPointerMove = (e: React.PointerEvent) => {
+    if (mode === 'round') return
     // 说明：未在拖拽时，鼠标指针给出“可操作性反馈”
     if (!dragging) {
       const target = e.target as HTMLElement
@@ -193,7 +209,7 @@ export default function ImageCropPage() {
       const dx = x - dragging.startX
       const dy = y - dragging.startY
 
-      if (lockSquare || mode === 'round') {
+      if (lockSquare) {
         const s = Math.max(Math.abs(dx), Math.abs(dy))
         const w = dx >= 0 ? s : -s
         const h = dy >= 0 ? s : -s
@@ -236,7 +252,7 @@ export default function ImageCropPage() {
       let my = y
 
       // 说明：锁 1:1 时，让拖拽点保持正方形（取更大的边长）
-      if (lockSquare || mode === 'round') {
+      if (lockSquare) {
         const dx = mx - anchor.ax
         const dy = my - anchor.ay
         const s = Math.max(Math.abs(dx), Math.abs(dy))
@@ -264,7 +280,14 @@ export default function ImageCropPage() {
     setBusy(true)
     try {
       if (!inputPath) throw new Error('请先选择图片')
-      if (!cropRect) throw new Error('请在预览图上拖拽选择裁剪区域')
+      if (!cropRect) {
+        if (mode === 'round') {
+          const box = getImageBox()
+          setCropRect({ x: 0, y: 0, w: box.width, h: box.height })
+        } else {
+          throw new Error('请在预览图上拖拽选择裁剪区域')
+        }
+      }
 
       const imgBox = getImageBox()
       const nat = getNaturalSize()
@@ -273,7 +296,14 @@ export default function ImageCropPage() {
       const sx = nat.w / imgBox.width
       const sy = nat.h / imgBox.height
 
-      const r = normRect(cropRect)
+      const r = normRect(
+        cropRect ?? {
+          x: 0,
+          y: 0,
+          w: imgBox.width,
+          h: imgBox.height
+        }
+      )
       const px = Math.round(r.x * sx)
       const py = Math.round(r.y * sy)
       const pw = Math.round(r.w * sx)
@@ -477,7 +507,8 @@ export default function ImageCropPage() {
 
             <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-xs text-app-muted">
               说明：
-              <p>1）在右侧预览图上拖拽选区（可移动）。</p>
+              <p>1）自定义模式：在右侧预览图上拖拽选区（可移动/缩放）。</p>
+              <p>2）圆角模式：默认整图裁剪（无需拖拽选区）。</p>
               <p>2）“裁剪”会在系统临时目录生成 PNG（带透明圆角）。</p>
               <p>3）点击“保存”只是把临时文件复制到你选择的位置。</p>
             </div>
@@ -495,13 +526,15 @@ export default function ImageCropPage() {
                   ref={wrapRef}
                   className={
                     'relative h-full w-full select-none ' +
-                    (hoverCursor === 'move'
-                      ? 'cursor-move'
-                      : hoverCursor === 'nwse-resize'
-                        ? 'cursor-nwse-resize'
-                        : hoverCursor === 'nesw-resize'
-                          ? 'cursor-nesw-resize'
-                          : 'cursor-crosshair')
+                    (mode === 'round'
+                      ? 'cursor-default'
+                      : hoverCursor === 'move'
+                        ? 'cursor-move'
+                        : hoverCursor === 'nwse-resize'
+                          ? 'cursor-nwse-resize'
+                          : hoverCursor === 'nesw-resize'
+                            ? 'cursor-nesw-resize'
+                            : 'cursor-crosshair')
                   }
                   onPointerDown={onPointerDown}
                   onPointerMove={onPointerMove}
@@ -509,7 +542,7 @@ export default function ImageCropPage() {
                 >
                   <img ref={imgRef} src={previewUrl} className="h-full w-full object-contain" draggable={false} />
 
-                  {cropRect ? (
+                  {mode === 'custom' && cropRect ? (
                     <div
                       data-crop="box"
                       className="absolute border-2 border-brand-500 bg-brand-500/10"
@@ -535,7 +568,9 @@ export default function ImageCropPage() {
                   ) : null}
                 </div>
               ) : (
-                <div className="flex h-full items-center justify-center text-sm text-app-muted">请先选择图片，然后在这里拖拽选择裁剪区域</div>
+                <div className="flex h-full items-center justify-center text-sm text-app-muted">
+                  请先选择图片（圆角模式默认整图裁剪，自定义模式需拖拽选区）
+                </div>
               )}
             </div>
 

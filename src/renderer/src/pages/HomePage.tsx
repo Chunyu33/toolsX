@@ -38,7 +38,7 @@ export default function HomePage() {
     <div className="app-gradient-bg flex h-full min-h-0 flex-col">
       <Header title="工具列表" onSearchChange={setQuery} />
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="page-enter min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto max-w-5xl px-6 py-6">
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
             {list.map((t) => (

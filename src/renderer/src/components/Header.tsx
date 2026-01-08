@@ -1,8 +1,8 @@
 import type { ChangeEvent } from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { ChevronLeft, Maximize2, Minus, Search, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Maximize2, Minus, Search, X } from 'lucide-react'
 import SettingsModal from './SettingsModal'
+import appLogo from '../../../assets/app.png'
 
 type Props = {
   title: string
@@ -10,11 +10,8 @@ type Props = {
 }
 
 export default function Header({ title, onSearchChange }: Props) {
-  const location = useLocation()
   const [search, setSearch] = useState('')
   const [isMax, setIsMax] = useState(false)
-
-  const showBack = useMemo(() => location.pathname !== '/', [location.pathname])
 
   useEffect(() => {
     let cancelled = false
@@ -35,19 +32,9 @@ export default function Header({ title, onSearchChange }: Props) {
     <div className="sticky top-0 z-20 border-b border-app-border bg-app-surface/80 backdrop-blur">
       <div className="titlebar flex h-12 items-center">
         <div className="flex items-center gap-2 pl-3 pr-2">
-          <div className="h-7 w-7 rounded-lg bg-brand-500/20 ring-1 ring-brand-300/40" />
+          <img src={appLogo} className="h-7 w-7 rounded-[6px] ring-1 ring-brand-300/40" draggable={false} />
           <div className="text-sm font-semibold tracking-wide text-app-text">ToolsX</div>
         </div>
-
-        {showBack ? (
-          <Link
-            to="/"
-            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-app-border bg-app-surface text-app-text hover:bg-app-surface2"
-            title="返回"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </Link>
-        ) : null}
 
         <div className="flex-1" title={title} />
 
