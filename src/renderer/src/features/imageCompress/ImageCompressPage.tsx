@@ -3,6 +3,7 @@ import { Download, FileImage, Loader2, Sparkles } from 'lucide-react'
 import { toLocalfileUrl } from '../videoToGif/utils'
 import ImagePreviewModal from '../../components/ImagePreviewModal'
 import LoadingOverlay from '../../components/LoadingOverlay'
+import Toast from '../../components/Toast'
 import { getBasenameNoExt, getDirname } from '../../utils/filePath'
 
 function collectTempDirsFromItems(items: Array<{ outputPath?: string }>): string[] {
@@ -18,6 +19,13 @@ function collectTempDirsFromItems(items: Array<{ outputPath?: string }>): string
 }
 
 export default function ImageCompressPage() {
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastText, setToastText] = useState('')
+  const showToast = (text: string) => {
+    setToastText(text)
+    setToastOpen(true)
+  }
+
   const [items, setItems] = useState<
     Array<{
       id: string
@@ -153,7 +161,7 @@ export default function ImageCompressPage() {
       })
       if (!res.canceled && res.savedPath) {
         setErrorText(null)
-        alert(`图片已保存到：${res.savedPath}`)
+        showToast(`已保存：${res.savedPath}`)
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
@@ -190,7 +198,7 @@ export default function ImageCompressPage() {
       })
       if (!res.canceled && res.savedPath) {
         setErrorText(null)
-        alert(`压缩包已保存到：${res.savedPath}`)
+        showToast(`已保存：${res.savedPath}`)
       }
     } catch (e) {
       setErrorText(e instanceof Error ? e.message : String(e))
@@ -201,6 +209,7 @@ export default function ImageCompressPage() {
 
   return (
     <div className="relative mx-auto max-w-6xl px-6 py-6">
+      <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="处理中..." />
       <ImagePreviewModal
         open={previewOpen}

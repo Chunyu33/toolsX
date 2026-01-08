@@ -5,6 +5,7 @@ import { tools } from '../features/tools/data'
 import VideoToGifPage from '../features/videoToGif/VideoToGifPage'
 import ImageConvertPage from '../features/imageConvert/ImageConvertPage'
 import ImageCompressPage from '../features/imageCompress/ImageCompressPage'
+import ImageCropPage from '../features/imageCrop/ImageCropPage'
 import TimestampConvertPage from '../features/timestampConvert/TimestampConvertPage'
 import Base64ToolPage from '../features/base64Tool/Base64ToolPage'
 import QrToolPage from '../features/qrTool/QrToolPage'
@@ -27,6 +28,8 @@ export default function ToolPage() {
           <ImageConvertPage />
         ) : toolId === 'image-compress' ? (
           <ImageCompressPage />
+        ) : toolId === 'image-crop' ? (
+          <ImageCropPage />
         ) : toolId === 'timestamp-convert' ? (
           <TimestampConvertPage />
         ) : toolId === 'base64-tool' ? (

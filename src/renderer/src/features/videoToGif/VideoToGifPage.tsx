@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Download, Film, Loader2, Play, Wand2 } from 'lucide-react'
 import { toLocalfileUrl } from './utils'
 import LoadingOverlay from '../../components/LoadingOverlay'
+import Toast from '../../components/Toast'
 
 type Segment = {
   startSeconds: number
@@ -18,6 +19,13 @@ type GifOptions = {
 // Minimal first version: user chooses a file, sets segment, preview video in that range, then generate GIF.
 export default function VideoToGifPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
+  const [toastOpen, setToastOpen] = useState(false)
+  const [toastText, setToastText] = useState('')
+  const showToast = (text: string) => {
+    setToastText(text)
+    setToastOpen(true)
+  }
+
   const [videoPath, setVideoPath] = useState<string | null>(null)
   const [segment, setSegment] = useState<Segment>({ startSeconds: 0, endSeconds: 3 })
   const [gifOptions, setGifOptions] = useState<GifOptions>({ preset: 'medium', fps: 12, width: 720, keepOriginalWidth: false })
@@ -110,6 +118,7 @@ export default function VideoToGifPage() {
 
   return (
     <div className="relative mx-auto max-w-6xl px-6 py-6">
+      <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="处理中..." />
       <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
         <div className="flex items-start justify-between gap-4">
@@ -348,7 +357,7 @@ export default function VideoToGifPage() {
                           const res = await window.toolsx.files.saveGif({ sourcePath: gifPath })
                           if (!res.canceled && res.savedPath) {
                             setErrorText(null)
-                            alert(`GIF 已保存到：${res.savedPath}`)
+                            showToast(`已保存：${res.savedPath}`)
                           }
                         } catch (e) {
                           setErrorText(e instanceof Error ? e.message : String(e))

@@ -18,6 +18,7 @@ export const IpcChannels = {
   FilesGetFileInfo: 'files:getFileInfo',
   VideoToGifConvert: 'videoToGif:convert',
   ImageConvertConvert: 'imageConvert:convert',
+  ImageCropProcess: 'imageCrop:process',
   PdfMerge: 'pdf:merge',
   PdfSplit: 'pdf:split'
 } as const

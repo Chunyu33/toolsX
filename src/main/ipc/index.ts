@@ -4,6 +4,7 @@ import { registerWindowIpc } from './window'
 import { registerFilesIpc } from './files'
 import { registerVideoToGifIpc } from './videoToGif'
 import { registerImageConvertIpc } from './imageConvert'
+import { registerImageCropIpc } from './imageCrop'
 // @ts-ignore
 import { registerPdfIpc } from './pdf'
 
@@ -26,6 +27,7 @@ export function registerIpcHandlers(): void {
   ipcMain.removeHandler('files:getFileInfo')
   ipcMain.removeHandler('videoToGif:convert')
   ipcMain.removeHandler('imageConvert:convert')
+  ipcMain.removeHandler('imageCrop:process')
   ipcMain.removeHandler('pdf:merge')
   ipcMain.removeHandler('pdf:split')
 
@@ -34,5 +36,6 @@ export function registerIpcHandlers(): void {
   registerFilesIpc()
   registerVideoToGifIpc()
   registerImageConvertIpc()
+  registerImageCropIpc()
   registerPdfIpc()
 }

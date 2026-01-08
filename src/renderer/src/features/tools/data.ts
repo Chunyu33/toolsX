@@ -20,6 +20,12 @@ export const tools: ToolDefinition[] = [
     route: '/tool/image-compress'
   },
   {
+    id: 'image-crop',
+    title: '图片裁剪',
+    description: '矩形裁剪 + 圆角裁剪（适合做 App Icon），本地离线处理',
+    route: '/tool/image-crop'
+  },
+  {
     id: 'timestamp-convert',
     title: '时间戳转换',
     description: '秒 / 毫秒互转，实时显示当前系统时间',
@@ -40,7 +46,7 @@ export const tools: ToolDefinition[] = [
   {
     id: 'pdf-tool',
     title: 'PDF 助手',
-    description: 'PDF 合并、拆分、按页导出图片（本地离线）',
+    description: 'PDF 合并、拆分、按页导出图片',
     route: '/tool/pdf-tool'
   },
   {

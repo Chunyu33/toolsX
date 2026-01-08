@@ -58,6 +58,14 @@ export type ToolsXApi = {
     ) => Promise<{ outputPath: string; format: 'png' | 'jpeg' | 'webp' | 'avif' | 'gif' | 'ico'; quality?: number; sizeBytes: number }>
   }
 
+  imageCrop: {
+    process: (args: {
+      inputPath: string
+      rect: { x: number; y: number; width: number; height: number }
+      round: { radius: number; corners: { tl: boolean; tr: boolean; br: boolean; bl: boolean } }
+    }) => Promise<{ outputPath: string; tempDir: string; width: number; height: number }>
+  }
+
   pdf: {
     merge: (args: { inputPaths: string[] }) => Promise<{ outputPath: string; tempDir: string }>
     split: (args: {
@@ -97,6 +105,9 @@ export const api: ToolsXApi = {
   },
   imageConvert: {
     convert: (args) => ipcRenderer.invoke(IpcChannels.ImageConvertConvert, args)
+  },
+  imageCrop: {
+    process: (args) => ipcRenderer.invoke(IpcChannels.ImageCropProcess, args)
   },
   pdf: {
     merge: (args) => ipcRenderer.invoke(IpcChannels.PdfMerge, args),
