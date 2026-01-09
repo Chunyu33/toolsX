@@ -34,9 +34,9 @@ export async function createMainWindow(): Promise<BrowserWindow> {
     win.show()
 
     // TODO: 打包产物黑屏排查用。需要时设置环境变量 TOOLSX_OPEN_DEVTOOLS=1 让安装包也自动打开 DevTools。
-    // const shouldOpenDevTools = Boolean(process.env.ELECTRON_RENDERER_URL) || process.env.TOOLSX_OPEN_DEVTOOLS === '1'
-    // if (shouldOpenDevTools) win.webContents.openDevTools({ mode: 'detach' })
-    win.webContents.openDevTools({ mode: 'detach' })
+    const shouldOpenDevTools = Boolean(process.env.ELECTRON_RENDERER_URL) || process.env.TOOLSX_OPEN_DEVTOOLS === '1'
+    if (shouldOpenDevTools) win.webContents.openDevTools({ mode: 'detach' })
+    // win.webContents.openDevTools({ mode: 'detach' })
   })
 
   win.webContents.setWindowOpenHandler(({ url }: { url: string }) => {

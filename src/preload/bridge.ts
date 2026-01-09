@@ -4,6 +4,12 @@ import { IpcChannels } from '../shared/ipc'
 export type ToolsXApi = {
   system: {
     ping: () => Promise<string>
+    copyText: (text: string) => Promise<void>
+  }
+
+  uiPrefs: {
+    getBackButtonPos: () => Promise<{ xPct: number; yPct: number }>
+    setBackButtonPos: (args: { xPct: number; yPct: number }) => Promise<{ xPct: number; yPct: number }>
   }
 
   updater: {
@@ -100,7 +106,15 @@ export type ToolsXApi = {
 
 export const api: ToolsXApi = {
   system: {
-    ping: () => ipcRenderer.invoke(IpcChannels.SystemPing)
+    ping: () => ipcRenderer.invoke(IpcChannels.SystemPing),
+    copyText: async (text: string) => {
+      await ipcRenderer.invoke(IpcChannels.SystemCopyText, { text })
+    }
+  },
+
+  uiPrefs: {
+    getBackButtonPos: () => ipcRenderer.invoke(IpcChannels.UiPrefsGetBackButtonPos),
+    setBackButtonPos: (args) => ipcRenderer.invoke(IpcChannels.UiPrefsSetBackButtonPos, args)
   },
 
   updater: {

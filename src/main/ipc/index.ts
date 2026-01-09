@@ -9,13 +9,18 @@ import { registerSvgToolIpc } from './svgTool'
 import { registerUpdaterIpc } from './updater'
 // @ts-ignore
 import { registerPdfIpc } from './pdf'
+import { registerUiPrefsIpc } from './uiPrefs'
 
 export function registerIpcHandlers(): void {
   ipcMain.removeHandler('system:ping')
+  ipcMain.removeHandler('system:copyText')
   ipcMain.removeHandler('window:minimize')
   ipcMain.removeHandler('window:toggleMaximize')
   ipcMain.removeHandler('window:close')
   ipcMain.removeHandler('window:isMaximized')
+
+  ipcMain.removeHandler('uiPrefs:getBackButtonPos')
+  ipcMain.removeHandler('uiPrefs:setBackButtonPos')
 
   ipcMain.removeHandler('updater:getVersion')
   ipcMain.removeHandler('updater:getStatus')
@@ -44,6 +49,7 @@ export function registerIpcHandlers(): void {
 
   registerSystemIpc()
   registerWindowIpc()
+  registerUiPrefsIpc()
   registerUpdaterIpc()
   registerFilesIpc()
   registerVideoToGifIpc()

@@ -1,9 +1,13 @@
 export const IpcChannels = {
   SystemPing: 'system:ping',
+  SystemCopyText: 'system:copyText',
   WindowMinimize: 'window:minimize',
   WindowToggleMaximize: 'window:toggleMaximize',
   WindowClose: 'window:close',
   WindowIsMaximized: 'window:isMaximized',
+
+  UiPrefsGetBackButtonPos: 'uiPrefs:getBackButtonPos',
+  UiPrefsSetBackButtonPos: 'uiPrefs:setBackButtonPos',
 
   UpdaterGetVersion: 'updater:getVersion',
   UpdaterGetStatus: 'updater:getStatus',

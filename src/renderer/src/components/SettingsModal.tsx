@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
-import { Info, Laptop, Loader2, Moon, Settings, Sun, X } from 'lucide-react'
+import { Clipboard, Info, Laptop, Loader2, Moon, MessageCircle, Settings, Sun, X } from 'lucide-react'
 import { getStoredThemeMode, setStoredThemeMode, type ThemeMode } from '../theme/theme'
 import Toast from './Toast'
 
@@ -8,7 +8,7 @@ type Props = {
   triggerClassName?: string
 }
 
-type NavKey = 'general' | 'about'
+type NavKey = 'general' | 'about' | 'feedback'
 
 type UpdaterStatus =
   | { status: 'idle' }
@@ -66,7 +66,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
   }
 
   const title = useMemo(() => {
-    return nav === 'general' ? '通用' : '关于'
+    return nav === 'general' ? '通用' : nav === 'about' ? '关于' : '意见反馈'
   }, [nav])
 
   const setMode = (mode: ThemeMode) => {
@@ -137,6 +137,19 @@ export default function SettingsModal({ triggerClassName }: Props) {
                 >
                   <Settings className={nav === 'general' ? 'h-4 w-4 text-brand-600' : 'h-4 w-4 text-app-muted'} />
                   通用
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setNav('feedback')}
+                  className={
+                    nav === 'feedback'
+                      ? 'flex w-full items-center gap-2 rounded-lg bg-app-surface px-3 py-2 text-sm text-app-text ring-1 ring-brand-300/50'
+                      : 'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-app-text hover:bg-app-surface'
+                  }
+                >
+                  <MessageCircle className={nav === 'feedback' ? 'h-4 w-4 text-brand-600' : 'h-4 w-4 text-app-muted'} />
+                  意见反馈
                 </button>
 
                 <button
@@ -212,7 +225,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       <div className="mt-1 text-xs text-app-muted">后续可添加快捷键、语言、启动项等设置</div>
                     </div> */}
                   </div>
-                ) : (
+                ) : nav === 'about' ? (
                   <div key={nav} className="panel-enter mt-4 space-y-4">
                     <div className="rounded-xl border border-app-border bg-app-surface p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -302,6 +315,43 @@ export default function SettingsModal({ triggerClassName }: Props) {
                           </button>
                         </div>
                       ) : null}
+                    </div>
+                  </div>
+                ) : (
+                  <div key={nav} className="panel-enter mt-4 space-y-4">
+                    <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                      <div className="text-sm font-semibold text-app-text">联系作者</div>
+                      <div className="mt-1 text-xs text-app-muted">欢迎提交建议与问题反馈</div>
+
+                      <div className="mt-4 space-y-2">
+                        {[
+                          { label: '邮箱', value: '1378813463@qq.com' },
+                          { label: '微信', value: 'B_HH6050' },
+                          { label: 'QQ', value: '1378813463' }
+                        ].map((it) => (
+                          <div key={it.label} className="flex items-center justify-between gap-3 rounded-lg border border-app-border bg-app-surface2 px-3 py-2">
+                            <div className="min-w-0">
+                              <div className="text-xs text-app-muted">{it.label}</div>
+                              <div className="select-text truncate text-sm text-app-text">{it.value}</div>
+                            </div>
+                            <button
+                              className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                              onClick={async () => {
+                                try {
+                                  await window.toolsx.system.copyText(it.value)
+                                  showToast('已复制')
+                                } catch (e) {
+                                  showToast(e instanceof Error ? e.message : String(e))
+                                }
+                              }}
+                              type="button"
+                            >
+                              <Clipboard className="h-4 w-4" />
+                              复制
+                            </button>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   </div>
                 )}
