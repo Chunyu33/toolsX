@@ -194,7 +194,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                     <div className="rounded-xl border border-app-border bg-app-surface p-4">
                       <div className="text-sm font-semibold text-app-text">临时文件</div>
                       <div className="mt-1 text-xs text-app-muted">
-                        清理系统临时目录下由 ToolsX 生成的临时文件（仅清理 toolsx-imgc-* / toolsx-pdf-*，主进程会做严格白名单校验）。
+                        清理系统临时目录下由 ToolsX 生成的临时文件（仅清理 toolsx-*，主进程会做严格白名单校验）。
                       </div>
 
                       <div className="mt-3">
