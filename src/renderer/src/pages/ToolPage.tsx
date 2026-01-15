@@ -14,6 +14,30 @@ import QrToolPage from '../features/qrTool/QrToolPage'
 import PdfToolPage from '../features/pdfTool/PdfToolPage'
 import JsonFormatterPage from '../features/jsonFormatter/JsonFormatterPage'
 
+ function clamp01(v: number) {
+   return Math.max(0, Math.min(1, v))
+ }
+
+ function clamp(v: number, min: number, max: number) {
+   return Math.max(min, Math.min(max, v))
+ }
+
+ function snapBackButtonPos(xPct: number, yPct: number) {
+   const EDGE_MIN = 0.03
+   const EDGE_MAX = 0.12
+   const EDGE_MIN_R = 1 - EDGE_MIN
+   const EDGE_MAX_R = 1 - EDGE_MAX
+
+   const Y_MIN = 0.14
+   const Y_MAX = 0.9
+
+   const side: 'left' | 'right' = clamp01(xPct) < 0.5 ? 'left' : 'right'
+   const snappedX = side === 'left' ? clamp(xPct, EDGE_MIN, EDGE_MAX) : clamp(xPct, EDGE_MAX_R, EDGE_MIN_R)
+   const snappedY = clamp(yPct, Y_MIN, Y_MAX)
+
+   return { xPct: snappedX, yPct: snappedY }
+ }
+
 export default function ToolPage() {
   const { toolId } = useParams()
   const navigate = useNavigate()
@@ -37,10 +61,11 @@ export default function ToolPage() {
       .getBackButtonPos()
       .then((res) => {
         if (cancelled) return
-        const xPct = Number.isFinite(res?.xPct) ? Math.max(0, Math.min(1, res.xPct)) : 0.03
-        const yPct = Number.isFinite(res?.yPct) ? Math.max(0, Math.min(1, res.yPct)) : 0.2
-        setBackBtnXPct(xPct)
-        setBackBtnYPct(yPct)
+        const xPct = Number.isFinite(res?.xPct) ? res.xPct : 0.03
+        const yPct = Number.isFinite(res?.yPct) ? res.yPct : 0.2
+        const snapped = snapBackButtonPos(xPct, yPct)
+        setBackBtnXPct(snapped.xPct)
+        setBackBtnYPct(snapped.yPct)
       })
       .catch(() => undefined)
 
@@ -99,8 +124,9 @@ export default function ToolPage() {
 
           const nextXPct = st.startXPct + dx / window.innerWidth
           const nextYPct = st.startYPct + dy / window.innerHeight
-          setBackBtnXPct(Math.max(0, Math.min(1, nextXPct)))
-          setBackBtnYPct(Math.max(0, Math.min(1, nextYPct)))
+          const snapped = snapBackButtonPos(nextXPct, nextYPct)
+          setBackBtnXPct(snapped.xPct)
+          setBackBtnYPct(snapped.yPct)
         }}
         onPointerUp={async (e) => {
           const st = dragRef.current
@@ -120,7 +146,10 @@ export default function ToolPage() {
 
           // 拖拽结束后持久化位置
           try {
-            await window.toolsx.uiPrefs.setBackButtonPos({ xPct: backBtnXPct, yPct: backBtnYPct })
+            const snapped = snapBackButtonPos(backBtnXPct, backBtnYPct)
+            setBackBtnXPct(snapped.xPct)
+            setBackBtnYPct(snapped.yPct)
+            await window.toolsx.uiPrefs.setBackButtonPos(snapped)
           } catch {
             // ignore
           }

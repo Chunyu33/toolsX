@@ -51,6 +51,20 @@ export default function Header({ title, onSearchChange }: Props) {
               placeholder="搜索工具..."
               className="w-full rounded-lg border border-app-border bg-app-surface2 px-9 py-2 text-sm text-app-text outline-none focus:border-brand-300"
             />
+
+            {search.trim() ? (
+              <button
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-app-muted hover:bg-app-surface hover:text-app-text"
+                title="清除"
+                onClick={() => {
+                  setSearch('')
+                  onSearchChange?.('')
+                }}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            ) : null}
           </div>
 
           <SettingsModal />
