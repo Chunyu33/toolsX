@@ -164,11 +164,11 @@ export default function Base64ToolPage() {
     <div className="mx-auto max-w-6xl px-6 py-6">
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
 
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-lg font-semibold text-app-text">Base64 工具</div>
-            <div className="mt-1 text-sm text-app-muted">支持文本与图片的 Base64 互转（完全离线处理）</div>
+            <div className="text-lg font-semibold text-app-text">Base64 编解码</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">文本 / 图片 Base64 互转</div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -201,12 +201,12 @@ export default function Base64ToolPage() {
 
         {tab === 'text' ? (
           <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+            <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-1">
               <div className="text-sm font-semibold text-app-text">操作</div>
 
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md"
                   onClick={encodeText}
                   type="button"
                 >
@@ -214,14 +214,14 @@ export default function Base64ToolPage() {
                   编码
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={decodeText}
                   type="button"
                 >
                   解码
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-app-border hover:bg-app-surface"
                   onClick={() => {
                     setTextInput('')
                     setTextBase64('')
@@ -233,7 +233,7 @@ export default function Base64ToolPage() {
                   清空
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={() => copy(textBase64)}
                   type="button"
                 >
@@ -243,15 +243,15 @@ export default function Base64ToolPage() {
               </div>
 
               {textError ? (
-                <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-red-600">{textError}</div>
+                <div className="mt-3 rounded-xl border border-red-200/50 bg-red-50/50 px-3 py-2 text-sm text-red-600">{textError}</div>
               ) : null}
 
-              <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-xs text-app-muted">
+              <div className="mt-3 rounded-xl border border-app-border/40 bg-app-surface/70 px-3 py-2 text-xs text-app-muted/70">
                 说明：文本编码/解码使用 UTF-8（避免中文乱码），完全离线运行。
               </div>
             </div>
 
-            <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+            <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-2">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <div>
                   <div className="text-sm font-semibold text-app-text">文本</div>
@@ -278,10 +278,10 @@ export default function Base64ToolPage() {
           </div>
         ) : (
           <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+            <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-1">
               <div className="text-sm font-semibold text-app-text">操作</div>
 
-              <label className="mt-3 block text-xs text-app-muted">
+              <label className="mt-3 block text-xs text-app-muted/80">
                 选择图片
                 <input
                   type="file"
@@ -297,7 +297,7 @@ export default function Base64ToolPage() {
 
               <div className="mt-4 grid grid-cols-2 gap-2">
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={parseBase64ToPreview}
                   type="button"
                 >
@@ -305,7 +305,7 @@ export default function Base64ToolPage() {
                   解析预览
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={downloadImage}
                   type="button"
                 >
@@ -313,7 +313,7 @@ export default function Base64ToolPage() {
                   下载图片
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={() => copy(imgDataUrl)}
                   type="button"
                 >
@@ -321,7 +321,7 @@ export default function Base64ToolPage() {
                   复制 Base64
                 </button>
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-app-border hover:bg-app-surface"
                   onClick={() => {
                     setImgPreview(null)
                     setImgDataUrl('')
@@ -335,25 +335,25 @@ export default function Base64ToolPage() {
               </div>
 
               {imgError ? (
-                <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-red-600">{imgError}</div>
+                <div className="mt-3 rounded-xl border border-red-200/50 bg-red-50/50 px-3 py-2 text-sm text-red-600">{imgError}</div>
               ) : null}
 
-              <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-xs text-app-muted">
+              <div className="mt-3 rounded-xl border border-app-border/40 bg-app-surface/70 px-3 py-2 text-xs text-app-muted/70">
                 说明：
                 1）可粘贴 DataURL（data:image/png;base64,...）或纯 Base64；
                 2）完全离线处理，不经过主进程。
               </div>
             </div>
 
-            <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+            <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-2">
               <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
                 <div>
                   <div className="text-sm font-semibold text-app-text">图片预览</div>
-                  <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
+                  <div className="mt-2 overflow-hidden rounded-xl border border-app-border/40 bg-gradient-to-br from-app-surface/80 to-app-surface2/50">
                     {imgPreview ? (
-                      <img src={imgPreview} className="block h-[360px] w-full object-contain" />
+                      <img src={imgPreview} className="block h-[320px] w-full object-contain" />
                     ) : (
-                      <div className="flex h-[360px] items-center justify-center text-sm text-app-muted">尚未选择/解析</div>
+                      <div className="flex h-[320px] items-center justify-center text-sm text-app-muted/60">尚未选择/解析</div>
                     )}
                   </div>
                 </div>
@@ -364,7 +364,7 @@ export default function Base64ToolPage() {
                     value={imgDataUrl}
                     onChange={(e) => setImgDataUrl(e.target.value)}
                     spellCheck={false}
-                    className="mt-2 h-[360px] w-full resize-none rounded-xl border border-app-border bg-app-surface px-3 py-2 font-mono text-xs text-app-text outline-none focus:border-brand-300"
+                    className="mt-2 h-[320px] w-full resize-none rounded-xl border border-app-border/50 bg-app-surface/80 px-3 py-2.5 font-mono text-xs text-app-text shadow-sm outline-none transition-all duration-150 placeholder:text-app-muted/50 focus:border-brand-300 focus:shadow-md"
                     placeholder="粘贴 Base64 或 DataURL..."
                   />
                 </div>

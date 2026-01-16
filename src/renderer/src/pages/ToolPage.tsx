@@ -101,7 +101,7 @@ export default function ToolPage() {
       <Header title={tool?.title ?? '工具'} />
 
       <button
-        className="fixed z-30 touch-none select-none rounded-full bg-brand-600 p-3 text-white shadow-lg shadow-brand-900/10 hover:bg-brand-700"
+        className="fixed z-30 touch-none select-none rounded-full bg-gradient-to-br from-brand-500 to-brand-600 p-3 text-white shadow-lg shadow-brand-600/20 ring-1 ring-brand-400/30 transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-xl hover:shadow-brand-600/25"
         style={{ left: backBtnLeft, top: backBtnTop, transform: 'translate(-50%, -50%)' }}
         onPointerDown={(e) => {
           if (e.button !== 0) return

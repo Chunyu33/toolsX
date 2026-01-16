@@ -124,15 +124,15 @@ export default function VideoToGifPage() {
     <div className="relative mx-auto max-w-6xl px-6 py-6">
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="处理中..." />
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">视频转 GIF</div>
-            <div className="mt-1 text-sm text-app-muted">选择视频文件，设置起止秒，预览并生成 GIF</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">选择视频文件，设置起止秒，预览并生成 GIF</div>
           </div>
 
           <button
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md"
             onClick={openVideo}
           >
             <Film className="h-4 w-4" />
@@ -141,7 +141,7 @@ export default function VideoToGifPage() {
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-1">
             <div className="text-sm font-semibold text-app-text">设置与操作</div>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <label className="text-xs text-app-muted">
@@ -282,7 +282,7 @@ export default function VideoToGifPage() {
 
             <div className="mt-4 flex items-center gap-2">
               <button
-                className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface"
+                className="inline-flex items-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md disabled:opacity-50"
                 disabled={!videoUrl || !videoPlayable}
                 onClick={playSegment}
               >
@@ -291,7 +291,7 @@ export default function VideoToGifPage() {
               </button>
 
               <button
-                className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md disabled:opacity-50"
                 disabled={!videoPath || busy}
                 onClick={generateGif}
               >
@@ -312,11 +312,11 @@ export default function VideoToGifPage() {
 
           </div>
 
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-2">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div>
                 <div className="text-sm font-semibold text-app-text">视频预览</div>
-                <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-black">
+                <div className="mt-2 overflow-hidden rounded-xl border border-app-border/40 bg-black/90">
                   {videoUrl ? (
                     <video
                       key={videoUrl}

@@ -240,15 +240,15 @@ export default function ImageConvertPage() {
         title={previewTitle}
         onClose={() => setPreviewOpen(false)}
       />
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">图片格式转换</div>
-            <div className="mt-1 text-sm text-app-muted">PNG / JPG / WebP / AVIF / GIF / ICO 格式互转，支持质量设置</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">PNG / JPG / WebP / AVIF / GIF / ICO 格式互转，支持质量设置</div>
           </div>
 
           <button
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md"
             onClick={openImages}
           >
             <FileImage className="h-4 w-4" />
@@ -266,17 +266,17 @@ export default function ImageConvertPage() {
         ) : null}
 
         <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-1">
             <div className="text-sm font-semibold text-app-text">设置与操作</div>
 
             <div className="mt-3">
               <div className="flex items-center justify-between">
                 <div className="text-xs font-semibold text-app-text">文件列表</div>
-                <div className="text-xs text-app-muted">{items.length} 个</div>
+                <div className="text-xs text-app-muted/70">{items.length} 个</div>
               </div>
-              <div className="mt-2 max-h-44 space-y-2 overflow-auto rounded-xl border border-app-border bg-app-surface p-2">
+              <div className="mt-2 max-h-44 space-y-1.5 overflow-auto rounded-xl border border-app-border/40 bg-app-surface/70 p-2">
                 {items.length === 0 ? (
-                  <div className="px-2 py-2 text-xs text-app-muted">尚未选择图片</div>
+                  <div className="px-2 py-2 text-xs text-app-muted/70">尚未选择图片</div>
                 ) : (
                   items.map((it, idx) => (
                     <button
@@ -284,21 +284,21 @@ export default function ImageConvertPage() {
                       type="button"
                       onClick={() => setActiveId(it.id)}
                       className={
-                        'w-full rounded-lg border px-2 py-2 text-left text-xs ' +
+                        'w-full rounded-lg border px-2.5 py-2 text-left text-xs transition-all duration-150 ' +
                         (it.id === activeId
-                          ? 'border-brand-300 bg-brand-500/10 text-app-text'
-                          : 'border-app-border bg-app-surface text-app-muted hover:bg-app-surface2')
+                          ? 'border-brand-300/70 bg-gradient-to-r from-brand-100/50 to-brand-50/30 text-app-text shadow-sm'
+                          : 'border-transparent bg-app-surface/50 text-app-muted hover:border-app-border/50 hover:bg-app-surface')
                       }
                     >
                       <div className="truncate">{idx + 1}. {it.inputPath}</div>
                       {it.outputMeta ? (
-                        <div className="mt-1 text-[11px] text-app-muted">
+                        <div className="mt-1 text-[11px] text-brand-600/80">
                           输出：{it.outputMeta.format.toUpperCase()} / {(it.outputMeta.sizeBytes / 1024).toFixed(1)}KB
                         </div>
                       ) : it.errorText ? (
-                        <div className="mt-1 text-[11px] text-red-600">{it.errorText}</div>
+                        <div className="mt-1 text-[11px] text-red-500">{it.errorText}</div>
                       ) : (
-                        <div className="mt-1 text-[11px] text-app-muted">未转换</div>
+                        <div className="mt-1 text-[11px] text-app-muted/60">未转换</div>
                       )}
                     </button>
                   ))
@@ -382,7 +382,7 @@ export default function ImageConvertPage() {
 
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md disabled:opacity-50"
                 disabled={!activeItem?.inputPath || busy}
                 onClick={convertActive}
               >
@@ -391,7 +391,7 @@ export default function ImageConvertPage() {
               </button>
 
               <button
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md disabled:opacity-50"
                 disabled={items.length === 0 || busy}
                 onClick={convertAll}
                 type="button"
@@ -401,7 +401,7 @@ export default function ImageConvertPage() {
               </button>
 
               <button
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-app-border hover:bg-app-surface disabled:opacity-50"
                 disabled={items.length === 0 && !errorText}
                 onClick={clearFiles}
                 type="button"
@@ -411,7 +411,7 @@ export default function ImageConvertPage() {
 
               {activeItem?.outputPath ? (
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={saveOutput}
                 >
                   <Download className="h-4 w-4" />
@@ -421,7 +421,7 @@ export default function ImageConvertPage() {
 
               {outputs.length > 1 ? (
                 <button
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                   onClick={saveZip}
                   type="button"
                 >
@@ -440,14 +440,14 @@ export default function ImageConvertPage() {
             ) : null}
           </div>
 
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-2">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div>
                 <div className="text-sm font-semibold text-app-text">原图预览</div>
-                <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
+                <div className="mt-2 overflow-hidden rounded-xl border border-app-border/40 bg-gradient-to-br from-app-surface/80 to-app-surface2/50">
                   {inputUrl ? (
                     <button
-                      className="block h-[360px] w-full cursor-zoom-in"
+                      className="block h-[320px] w-full cursor-zoom-in transition-opacity hover:opacity-90"
                       onClick={() => {
                         setPreviewSrc(inputUrl)
                         setPreviewTitle('原图预览')
@@ -455,20 +455,20 @@ export default function ImageConvertPage() {
                       }}
                       type="button"
                     >
-                      <img src={inputUrl} className="block h-[360px] w-full object-contain" />
+                      <img src={inputUrl} className="block h-[320px] w-full object-contain" />
                     </button>
                   ) : (
-                    <div className="flex h-[360px] items-center justify-center text-sm text-app-muted">尚未选择</div>
+                    <div className="flex h-[320px] items-center justify-center text-sm text-app-muted/60">尚未选择</div>
                   )}
                 </div>
               </div>
 
               <div>
                 <div className="text-sm font-semibold text-app-text">输出预览</div>
-                <div className="mt-2 overflow-hidden rounded-xl border border-app-border bg-app-surface">
+                <div className="mt-2 overflow-hidden rounded-xl border border-app-border/40 bg-gradient-to-br from-app-surface/80 to-app-surface2/50">
                   {outputUrl ? (
                     <button
-                      className="block h-[360px] w-full cursor-zoom-in"
+                      className="block h-[320px] w-full cursor-zoom-in transition-opacity hover:opacity-90"
                       onClick={() => {
                         setPreviewSrc(outputUrl)
                         setPreviewTitle('输出预览')
@@ -476,10 +476,10 @@ export default function ImageConvertPage() {
                       }}
                       type="button"
                     >
-                      <img src={outputUrl} className="block h-[360px] w-full object-contain" />
+                      <img src={outputUrl} className="block h-[320px] w-full object-contain" />
                     </button>
                   ) : (
-                    <div className="flex h-[360px] items-center justify-center text-sm text-app-muted">尚未转换</div>
+                    <div className="flex h-[320px] items-center justify-center text-sm text-app-muted/60">尚未转换</div>
                   )}
                 </div>
                 {activeItem?.outputPath ? (

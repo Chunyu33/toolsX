@@ -314,11 +314,11 @@ export default function PdfToolPage() {
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="PDF 处理中..." />
 
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-lg font-semibold text-app-text">PDF 助手</div>
-            <div className="mt-1 text-sm text-app-muted">PDF 合并、拆分、按页导出图片</div>
+            <div className="text-lg font-semibold text-app-text">PDF 工具</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">合并 / 拆分 / 导出图片（本地离线）</div>
           </div>
 
           <div className="flex items-center gap-2">

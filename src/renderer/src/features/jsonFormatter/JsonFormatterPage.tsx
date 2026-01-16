@@ -67,16 +67,16 @@ export default function JsonFormatterPage() {
   return (
     <div className="mx-auto max-w-6xl px-6 py-6">
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">JSON 格式化</div>
-            <div className="mt-1 text-sm text-app-muted">格式化 / 压缩 / 校验 JSON，一键复制结果</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">格式化 / 压缩 / 校验 JSON，一键复制结果</div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+              className="inline-flex items-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-app-border hover:bg-app-surface hover:shadow-md"
               onClick={() => {
                 setInput('')
                 setOutput('')
@@ -91,10 +91,10 @@ export default function JsonFormatterPage() {
         </div>
 
         <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-3">
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-1">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-1">
             <div className="text-sm font-semibold text-app-text">操作</div>
 
-            <label className="mt-3 block text-xs text-app-muted">
+            <label className="mt-3 block text-xs text-app-muted/80">
               缩进
               <input
                 type="number"
@@ -106,13 +106,13 @@ export default function JsonFormatterPage() {
                   const n = Number(e.target.value)
                   setIndent(Number.isFinite(n) ? Math.max(0, Math.min(8, Math.round(n))) : 2)
                 }}
-                className="mt-1 w-full rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text outline-none focus:border-brand-300"
+                className="mt-1 w-full rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm outline-none transition-all duration-150 focus:border-brand-300 focus:shadow-md"
               />
             </label>
 
             <div className="mt-4 grid grid-cols-2 gap-2">
               <button
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-3 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md"
                 onClick={formatJson}
                 type="button"
               >
@@ -120,7 +120,7 @@ export default function JsonFormatterPage() {
                 格式化
               </button>
               <button
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                 onClick={minify}
                 type="button"
               >
@@ -128,14 +128,14 @@ export default function JsonFormatterPage() {
                 压缩
               </button>
               <button
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                 onClick={validate}
                 type="button"
               >
                 校验
               </button>
               <button
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-brand-300/50 hover:bg-app-surface hover:shadow-md"
                 onClick={copyOutput}
                 type="button"
               >
@@ -144,18 +144,18 @@ export default function JsonFormatterPage() {
               </button>
             </div>
 
-            <div className="mt-4 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-xs text-app-muted">
+            <div className="mt-4 rounded-xl border border-app-border/40 bg-app-surface/70 px-3 py-2 text-xs text-app-muted/70">
               输入 {stats.inputLen} 字符，输出 {stats.outputLen} 字符
             </div>
 
             {errorText ? (
-              <div className="mt-3 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-red-600">
+              <div className="mt-3 rounded-xl border border-red-200/50 bg-red-50/50 px-3 py-2 text-sm text-red-600">
                 {errorText}
               </div>
             ) : null}
           </div>
 
-          <div className="rounded-xl border border-app-border bg-app-surface2 p-4 lg:col-span-2">
+          <div className="rounded-2xl border border-app-border/40 bg-app-surface2/60 p-4 backdrop-blur-sm lg:col-span-2">
             <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
               <div>
                 <div className="text-sm font-semibold text-app-text">输入</div>
@@ -163,7 +163,7 @@ export default function JsonFormatterPage() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   spellCheck={false}
-                  className="mt-2 h-[420px] w-full resize-none rounded-xl border border-app-border bg-app-surface px-3 py-2 font-mono text-xs text-app-text outline-none focus:border-brand-300"
+                  className="mt-2 h-[420px] w-full resize-none rounded-xl border border-app-border/50 bg-app-surface/80 px-3 py-2.5 font-mono text-xs text-app-text shadow-sm outline-none transition-all duration-150 placeholder:text-app-muted/50 focus:border-brand-300 focus:shadow-md"
                   placeholder="粘贴 JSON..."
                 />
               </div>

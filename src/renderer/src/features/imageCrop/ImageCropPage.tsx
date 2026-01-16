@@ -358,16 +358,16 @@ export default function ImageCropPage() {
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="处理中..." />
 
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">图片裁剪</div>
-            <div className="mt-1 text-sm text-app-muted">矩形裁剪 + 圆角裁剪。</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">矩形裁剪 + 圆角裁剪。</div>
           </div>
 
           <div className="flex items-center gap-2">
             <button
-              className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md disabled:opacity-50"
               onClick={pickImage}
               disabled={busy || picking}
               type="button"
@@ -376,7 +376,7 @@ export default function ImageCropPage() {
               选择图片
             </button>
             <button
-              className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+              className="inline-flex items-center gap-2 rounded-xl border border-app-border/60 bg-app-surface/80 px-3 py-2 text-sm text-app-text shadow-sm transition-all duration-150 hover:border-app-border hover:bg-app-surface disabled:opacity-50"
               onClick={clearAll}
               disabled={busy || picking}
               type="button"

@@ -212,11 +212,11 @@ export default function QrToolPage() {
       <Toast open={toastOpen} message={toastText} onClose={() => setToastOpen(false)} />
       <LoadingOverlay open={busy} text="处理中..." />
 
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <div className="text-lg font-semibold text-app-text">二维码生成与识别</div>
-            <div className="mt-1 text-sm text-app-muted">输入 URL/文本生成二维码，或上传二维码图片进行解析</div>
+            <div className="text-lg font-semibold text-app-text">二维码工具</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">生成 / 识别二维码（本地离线）</div>
           </div>
 
           <div className="flex items-center gap-2">

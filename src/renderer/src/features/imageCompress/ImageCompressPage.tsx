@@ -217,15 +217,15 @@ export default function ImageCompressPage() {
         title={previewTitle}
         onClose={() => setPreviewOpen(false)}
       />
-      <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
+      <div className="rounded-2xl border border-app-border/50 bg-app-surface/90 p-5 shadow-sm backdrop-blur-sm">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="text-lg font-semibold text-app-text">图片压缩</div>
-            <div className="mt-1 text-sm text-app-muted">输入目标体积，自动选择更小的输出策略（优先 WebP/AVIF）</div>
+            <div className="mt-1 text-[13px] text-app-muted/80">批量压缩图片，支持目标体积 / 质量设置</div>
           </div>
 
           <button
-            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700"
+            className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand-500 to-brand-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-brand-600 hover:to-brand-700 hover:shadow-md"
             onClick={openImages}
           >
             <FileImage className="h-4 w-4" />

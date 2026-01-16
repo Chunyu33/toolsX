@@ -44,11 +44,11 @@ export default function HomePage() {
           {query.trim() && list.length === 0 ? (
             <EmptyState
               title="没有匹配的工具"
-              description={`试试换个关键词，比如“图片 / JSON / 时间戳”。当前搜索：${query.trim()}`}
+              description={`试试换个关键词，比如"图片 / JSON / 时间戳"。当前搜索：${query.trim()}`}
               icon={<SearchX className="h-5 w-5" />}
             />
           ) : (
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {list.map((t) => (
                 (() => {
                   const Icon = getToolIcon(t.id)
@@ -56,25 +56,25 @@ export default function HomePage() {
                 <Link
                   key={t.id}
                   to={t.route}
-                  className="group relative overflow-hidden rounded-2xl border border-app-border/70 bg-app-surface/70 p-5 shadow-sm backdrop-blur transition hover:-translate-y-[1px] hover:border-brand-300 hover:shadow"
+                  className="group relative overflow-hidden rounded-2xl border border-app-border/50 bg-app-surface/80 p-4 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-300/60 hover:shadow-lg hover:shadow-brand-500/5"
                 >
-                  <div className="pointer-events-none absolute inset-0 opacity-0 transition group-hover:opacity-100">
-                    <div className="absolute -right-24 -top-24 h-56 w-56 rounded-full bg-brand-500/10 blur-2xl" />
-                    <div className="absolute -bottom-24 -left-24 h-56 w-56 rounded-full bg-brand-300/10 blur-2xl" />
+                  <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                    <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-gradient-to-br from-brand-400/15 to-brand-500/10 blur-2xl" />
+                    <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-gradient-to-tr from-brand-300/10 to-brand-200/5 blur-2xl" />
                   </div>
 
-                  <div className="relative flex items-start gap-4">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-500/15 text-brand-700 ring-1 ring-brand-300/40 transition group-hover:bg-brand-500/20 dark:text-brand-200">
+                  <div className="relative flex items-start gap-3.5">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-100 to-brand-50 text-brand-600 shadow-sm ring-1 ring-brand-200/50 transition-all duration-200 group-hover:shadow-md group-hover:ring-brand-300/60 dark:from-brand-200/20 dark:to-brand-100/10 dark:text-brand-400">
                       <Icon className="h-5 w-5" />
                     </div>
 
                     <div className="min-w-0 flex-1">
-                      <div className="text-base font-semibold text-app-text">{t.title}</div>
-                      <div className="mt-1 text-sm leading-relaxed text-app-muted">{t.description}</div>
+                      <div className="text-[15px] font-semibold text-app-text">{t.title}</div>
+                      <div className="mt-0.5 text-[13px] leading-relaxed text-app-muted/80">{t.description}</div>
 
-                      <div className="mt-4 inline-flex items-center gap-2 text-xs font-medium text-brand-600">
-                        点击进入
-                        <span className="transition group-hover:translate-x-0.5">→</span>
+                      <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand-600/90 transition-colors group-hover:text-brand-600">
+                        打开工具
+                        <span className="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
                       </div>
                     </div>
                   </div>
