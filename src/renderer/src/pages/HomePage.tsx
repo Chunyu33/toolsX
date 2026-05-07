@@ -1,12 +1,11 @@
 import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Binary, Braces, Clock, Crop, FileImage, FileJson, FileText, ImageDown, QrCode, SearchX, Video } from 'lucide-react'
 import Header from '../components/Header'
 import EmptyState from '../components/EmptyState'
+import ToolModal from '../components/ToolModal'
 import { tools } from '../features/tools/data'
 
 function getToolIcon(toolId: string) {
-  // 说明：首页只需要展示图标，不强制把 icon 字段塞进 shared 的 ToolDefinition，避免跨进程类型膨胀
   if (toolId === 'video-to-gif') return Video
   if (toolId === 'image-convert') return ImageDown
   if (toolId === 'image-compress') return FileImage
@@ -22,6 +21,7 @@ function getToolIcon(toolId: string) {
 
 export default function HomePage() {
   const [query, setQuery] = useState('')
+  const [selectedToolId, setSelectedToolId] = useState<string | null>(null)
 
   const list = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -53,10 +53,11 @@ export default function HomePage() {
                 (() => {
                   const Icon = getToolIcon(t.id)
                   return (
-                <Link
+                <button
                   key={t.id}
-                  to={t.route}
-                  className="group relative overflow-hidden rounded-2xl border border-app-border/50 bg-app-surface/80 p-4 shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-300/60 hover:shadow-lg hover:shadow-brand-500/5"
+                  className="group relative overflow-hidden rounded-2xl border border-app-border/50 bg-app-surface/80 p-4 text-left shadow-sm backdrop-blur-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-brand-300/60 hover:shadow-lg hover:shadow-brand-500/5"
+                  onClick={() => setSelectedToolId(t.id)}
+                  type="button"
                 >
                   <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                     <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-gradient-to-br from-brand-400/15 to-brand-500/10 blur-2xl" />
@@ -78,7 +79,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                </Link>
+                </button>
                   )
                 })()
               ))}
@@ -86,6 +87,13 @@ export default function HomePage() {
           )}
         </div>
       </div>
+
+      {/* 工具弹窗：始终渲染以保证出场动画可播放 */}
+      <ToolModal
+        toolId={selectedToolId || ''}
+        open={Boolean(selectedToolId)}
+        onClose={() => setSelectedToolId(null)}
+      />
     </div>
   )
 }
