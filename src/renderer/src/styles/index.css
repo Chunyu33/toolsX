@@ -11,69 +11,51 @@ body {
   height: 100%;
 }
 
+/* ============================================
+   微信 PC 端视觉规范 — CSS 变量（RGB 分量，供 Tailwind rgb() 语法使用）
+   ============================================ */
 :root {
-  --app-bg: 102 40% 98%;
-  --app-surface: 0 0% 100%;
-  --app-surface-2: 102 35% 96%;
-  --app-border: 102 18% 88%;
-  --app-text: 215 25% 14%;
-  --app-muted: 215 12% 50%;
+  --app-bg: 242 242 242;
+  --app-surface: 255 255 255;
+  --app-surface2: 245 245 245;
+  --app-border: 232 232 232;
+  --app-text: 77 77 77;
+  --app-muted: 153 153 153;
 
-  /* 说明：全局背景渐变（与主题色相协调），用于 HomePage / ToolPage 等页面容器 */
-  --app-grad-1: 102 65% 96%;
-  --app-grad-2: 210 30% 98%;
-  --app-grad-3: 102 55% 92%;
-
-  --brand-50: 102 65% 97%;
-  --brand-100: 102 60% 92%;
-  --brand-200: 102 55% 82%;
-  --brand-300: 102 52% 72%;
-  --brand-400: 102 50% 62%;
-  --brand-500: 102 48% 52%;
-  --brand-600: 102 50% 45%;
-  --brand-700: 102 55% 36%;
-
-  /* 现代化阴影 */
-  --shadow-sm: 0 1px 2px hsl(102 20% 50% / 0.04), 0 1px 3px hsl(102 20% 50% / 0.06);
-  --shadow-md: 0 4px 6px hsl(102 20% 50% / 0.04), 0 2px 4px hsl(102 20% 50% / 0.06), 0 0 0 1px hsl(var(--app-border) / 0.5);
-  --shadow-lg: 0 10px 25px hsl(102 30% 50% / 0.08), 0 4px 10px hsl(102 30% 50% / 0.05);
-  --shadow-glow: 0 0 20px hsl(102 50% 50% / 0.15);
+  --brand-50: 232 248 239;
+  --brand-100: 199 240 216;
+  --brand-200: 159 230 191;
+  --brand-300: 111 217 159;
+  --brand-400: 63 204 127;
+  --brand-500: 7 193 96;
+  --brand-600: 6 173 86;
+  --brand-700: 5 148 74;
 }
 
 .dark {
-  --app-bg: 102 14% 10%;
-  --app-surface: 102 12% 13%;
-  --app-surface-2: 102 12% 16%;
-  --app-border: 102 12% 22%;
-  --app-text: 210 20% 96%;
-  --app-muted: 210 12% 65%;
+  --app-bg: 17 17 17;
+  --app-surface: 30 30 30;
+  --app-surface2: 41 41 41;
+  --app-border: 51 51 51;
+  --app-text: 212 212 212;
+  --app-muted: 122 122 122;
 
-  /* 说明：暗色模式下的渐变更克制，避免大面积发灰或脏 */
-  --app-grad-1: 210 18% 10%;
-  --app-grad-2: 210 18% 9%;
-  --app-grad-3: 102 30% 12%;
-
-  --brand-50: 102 25% 12%;
-  --brand-100: 102 28% 16%;
-  --brand-200: 102 32% 22%;
-  --brand-300: 102 36% 28%;
-  --brand-400: 102 42% 38%;
-  --brand-500: 102 48% 48%;
-  --brand-600: 102 55% 60%;
-  --brand-700: 102 60% 70%;
-
-  --shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.2), 0 1px 3px hsl(0 0% 0% / 0.15);
-  --shadow-md: 0 4px 6px hsl(0 0% 0% / 0.25), 0 2px 4px hsl(0 0% 0% / 0.15);
-  --shadow-lg: 0 10px 25px hsl(0 0% 0% / 0.35), 0 4px 10px hsl(0 0% 0% / 0.2);
-  --shadow-glow: 0 0 20px hsl(102 50% 50% / 0.1);
+  --brand-50: 10 46 26;
+  --brand-100: 8 36 20;
+  --brand-200: 6 28 16;
+  --brand-300: 5 22 13;
+  --brand-400: 4 16 9;
+  --brand-500: 7 193 96;
+  --brand-600: 6 173 86;
+  --brand-700: 5 148 74;
 }
 
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica,
-    Arial, "Apple Color Emoji", "Segoe UI Emoji";
-  background: hsl(var(--app-bg));
-  color: hsl(var(--app-text));
+  font-family: system-ui, "Microsoft YaHei", "PingFang SC", "Helvetica Neue", sans-serif;
+  font-size: 14px;
+  background: rgb(var(--app-bg));
+  color: rgb(var(--app-text));
   overflow: hidden;
   user-select: none;
 }
@@ -86,69 +68,48 @@ select,
   user-select: text;
 }
 
-.app-gradient-bg {
-  background:
-    radial-gradient(1100px 520px at 12% 0%, hsl(var(--app-grad-1) / 0.9) 0%, transparent 55%),
-    radial-gradient(900px 520px at 88% 12%, hsl(var(--app-grad-3) / 0.8) 0%, transparent 60%),
-    linear-gradient(180deg, hsl(var(--app-grad-2) / 1) 0%, hsl(var(--app-bg) / 1) 70%);
-}
-
-@keyframes page-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.page-enter {
-  animation: page-enter 220ms ease-out;
-}
-
-@keyframes panel-enter {
-  from {
-    opacity: 0;
-    transform: translate3d(12px, 0, 0);
-  }
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.panel-enter {
-  animation: panel-enter 200ms ease-out;
-}
-
+/* ============================================
+   滚动条 — 6px 浅灰半透明
+   ============================================ */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsl(var(--app-border)) transparent;
+  scrollbar-color: rgba(0,0,0,0.08) transparent;
 }
 
 *::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-  border-radius: 20px;
+  width: 6px;
+  height: 6px;
 }
 
 *::-webkit-scrollbar-track {
-  background: hsl(var(--app-surface) / 0.35);
-  border-radius: 20px !important;
+  background: transparent;
 }
 
 *::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 20px !important;
-  box-shadow: inset 0 0 0 2px hsl(var(--app-border));
+  background: rgba(0,0,0,0.08);
+  border-radius: 3px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  box-shadow: inset 0 0 0 2px hsl(var(--brand-300));
+  background: rgba(0,0,0,0.15);
 }
 
+/* 暗色模式滚动条 */
+.dark * {
+  scrollbar-color: rgba(255,255,255,0.08) transparent;
+}
+
+.dark *::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.08);
+}
+
+.dark *::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,255,255,0.15);
+}
+
+/* ============================================
+   标题栏拖拽
+   ============================================ */
 .titlebar {
   -webkit-app-region: drag;
   user-select: none;
@@ -161,188 +122,250 @@ select,
   -webkit-app-region: no-drag;
 }
 
-/* ========== 现代化卡片样式 ========== */
+/* ============================================
+   原子组件样式
+   ============================================ */
+
+/* --- 卡片：纯白，1px 细边框，hover 微变 #F8F8F8 --- */
 .card {
-  background: hsl(var(--app-surface) / 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid hsl(var(--app-border) / 0.6);
-  border-radius: 20px;
-  box-shadow: var(--shadow-md);
-  transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+  background: rgb(var(--app-surface));
+  border: 1px solid rgb(var(--app-border));
+  border-radius: 8px;
 }
 
 .card:hover {
-  box-shadow: var(--shadow-lg);
-  border-color: hsl(var(--brand-300) / 0.5);
+  background: #F8F8F8;
 }
 
-.card-inner {
-  background: hsl(var(--app-surface-2) / 0.7);
-  backdrop-filter: blur(8px);
-  border: 1px solid hsl(var(--app-border) / 0.4);
-  border-radius: 16px;
+.dark .card:hover {
+  background: #242424;
 }
 
-/* ========== 现代化按钮样式 ========== */
+/* --- 主按钮：微信绿，4px 圆角 --- */
 .btn-primary {
-  background: linear-gradient(135deg, hsl(var(--brand-500)) 0%, hsl(var(--brand-600)) 100%);
-  color: white;
-  font-weight: 500;
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-  box-shadow: 0 2px 8px hsl(var(--brand-600) / 0.25), inset 0 1px 0 hsl(0 0% 100% / 0.15);
-  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgb(var(--brand-500));
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
   border: none;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(135deg, hsl(var(--brand-600)) 0%, hsl(var(--brand-700)) 100%);
-  box-shadow: 0 4px 12px hsl(var(--brand-600) / 0.35), inset 0 1px 0 hsl(0 0% 100% / 0.15);
-  transform: translateY(-1px);
-}
-
-.btn-primary:active {
-  transform: translateY(0);
-  box-shadow: 0 1px 4px hsl(var(--brand-600) / 0.2);
-}
-
-.btn-secondary {
-  background: hsl(var(--app-surface) / 0.9);
-  color: hsl(var(--app-text));
-  font-weight: 500;
-  border-radius: 12px;
-  padding: 0.5rem 1rem;
-  border: 1px solid hsl(var(--app-border));
-  box-shadow: var(--shadow-sm);
-  transition: all 0.15s ease;
-}
-
-.btn-secondary:hover {
-  background: hsl(var(--app-surface-2));
-  border-color: hsl(var(--brand-300) / 0.6);
-  box-shadow: var(--shadow-md);
-}
-
-/* ========== 现代化输入框样式 ========== */
-.input-modern {
-  background: hsl(var(--app-surface));
-  border: 1px solid hsl(var(--app-border));
-  border-radius: 12px;
-  padding: 0.625rem 0.875rem;
-  font-size: 0.875rem;
-  color: hsl(var(--app-text));
-  box-shadow: inset 0 1px 2px hsl(var(--app-border) / 0.15);
-  transition: all 0.15s ease;
+  border-radius: 4px;
+  padding: 7px 16px;
+  cursor: pointer;
   outline: none;
 }
 
-.input-modern:focus {
-  border-color: hsl(var(--brand-400));
-  box-shadow: inset 0 1px 2px hsl(var(--app-border) / 0.1), 0 0 0 3px hsl(var(--brand-300) / 0.15);
+.btn-primary:hover {
+  background: rgb(var(--brand-600));
 }
 
-.input-modern::placeholder {
-  color: hsl(var(--app-muted));
+.btn-primary:active {
+  background: rgb(var(--brand-700));
 }
 
-/* ========== 现代化预览区域 ========== */
-.preview-area {
-  background: 
-    linear-gradient(135deg, hsl(var(--app-surface-2) / 0.5) 0%, hsl(var(--app-surface) / 0.3) 100%),
-    repeating-conic-gradient(hsl(var(--app-border) / 0.3) 0% 25%, transparent 0% 50%) 50% / 16px 16px;
-  border: 1px solid hsl(var(--app-border) / 0.5);
-  border-radius: 16px;
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-/* ========== 现代化标签切换 ========== */
+/* --- 次按钮：灰底黑字，4px 圆角 --- */
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgb(var(--app-surface2));
+  color: rgb(var(--app-text));
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 16px;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-secondary:hover {
+  background: #ECECEC;
+}
+
+.dark .btn-secondary:hover {
+  background: #333333;
+}
+
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --- 危险按钮 --- */
+.btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #FA5151;
+  color: #FFFFFF;
+  font-size: 13px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  padding: 7px 16px;
+  cursor: pointer;
+  outline: none;
+}
+
+.btn-danger:hover {
+  background: #E04848;
+}
+
+/* --- 输入框：#FAFAFA 背景，无边框，Focus 时出现 1px 绿色边 --- */
+.input-wechat {
+  width: 100%;
+  background: #FAFAFA;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: rgb(var(--app-text));
+  outline: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.input-wechat::placeholder {
+  color: #B0B0B0;
+  font-size: 12px;
+}
+
+.input-wechat:focus {
+  background: rgb(var(--app-surface));
+  border-color: rgb(var(--brand-500));
+}
+
+.dark .input-wechat {
+  background: #2A2A2A;
+}
+
+.dark .input-wechat:focus {
+  background: rgb(var(--app-surface));
+}
+
+/* --- Select：与 Input 统一 --- */
+.select-wechat {
+  width: 100%;
+  background: #FAFAFA;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: rgb(var(--app-text));
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999999'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+.select-wechat:focus {
+  background: rgb(var(--app-surface));
+  border-color: rgb(var(--brand-500));
+}
+
+.dark .select-wechat {
+  background: #2A2A2A;
+}
+
+.dark .select-wechat:focus {
+  background: rgb(var(--app-surface));
+}
+
+/* --- 标签切换 --- */
 .tab-active {
-  background: linear-gradient(135deg, hsl(var(--brand-100)) 0%, hsl(var(--brand-50)) 100%);
-  border-color: hsl(var(--brand-300));
-  color: hsl(var(--brand-700));
-  box-shadow: 0 2px 8px hsl(var(--brand-300) / 0.2);
+  background: rgb(var(--brand-50));
+  color: rgb(var(--brand-500));
+  border: 1px solid rgb(var(--brand-500));
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  cursor: pointer;
 }
 
 .tab-inactive {
-  background: hsl(var(--app-surface) / 0.6);
-  border-color: hsl(var(--app-border) / 0.6);
-  color: hsl(var(--app-muted));
+  background: rgb(var(--app-surface2));
+  color: rgb(var(--app-muted));
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 13px;
+  padding: 5px 14px;
+  cursor: pointer;
 }
 
 .tab-inactive:hover {
-  background: hsl(var(--app-surface-2));
-  border-color: hsl(var(--app-border));
+  color: rgb(var(--app-text));
+  background: #ECECEC;
 }
 
-/* ========== 文件列表项 ========== */
+/* --- 文件列表项 --- */
 .file-item {
-  background: hsl(var(--app-surface) / 0.8);
-  border: 1px solid hsl(var(--app-border) / 0.5);
-  border-radius: 10px;
-  padding: 0.5rem 0.75rem;
-  transition: all 0.15s ease;
+  background: rgb(var(--app-surface));
+  border: 1px solid rgb(var(--app-border));
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: rgb(var(--app-text));
 }
 
 .file-item:hover {
-  background: hsl(var(--app-surface-2));
-  border-color: hsl(var(--app-border));
+  background: #F8F8F8;
+}
+
+.dark .file-item:hover {
+  background: #242424;
 }
 
 .file-item-active {
-  background: linear-gradient(135deg, hsl(var(--brand-100) / 0.5) 0%, hsl(var(--brand-50) / 0.3) 100%);
-  border-color: hsl(var(--brand-300));
+  background: rgb(var(--brand-50));
+  border-color: rgb(var(--brand-500));
 }
 
-/* ========== 提示框样式 ========== */
+/* --- 提示框 --- */
 .hint-box {
-  background: hsl(var(--app-surface) / 0.7);
-  border: 1px solid hsl(var(--app-border) / 0.4);
-  border-radius: 12px;
-  padding: 0.75rem 1rem;
-  font-size: 0.75rem;
-  color: hsl(var(--app-muted));
+  background: rgb(var(--app-surface2));
+  border: 1px solid rgb(var(--app-border));
+  border-radius: 4px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: rgb(var(--app-muted));
 }
 
-/* ========== 增强动画 ========== */
-@keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+/* --- 预览区 --- */
+.preview-area {
+  background: rgb(var(--app-surface2));
+  border: 1px solid rgb(var(--app-border));
+  border-radius: 4px;
 }
 
-@keyframes slide-up {
-  from { 
-    opacity: 0; 
-    transform: translateY(8px); 
-  }
-  to { 
-    opacity: 1; 
-    transform: translateY(0); 
-  }
+/* ============================================
+   过渡动画（极简）
+   ============================================ */
+
+/* 面板切换 — 淡入 + 轻微上移 */
+@keyframes panel-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes scale-in {
-  from { 
-    opacity: 0; 
-    transform: scale(0.95); 
-  }
-  to { 
-    opacity: 1; 
-    transform: scale(1); 
-  }
+.panel-enter {
+  animation: panel-enter 0.15s ease-out forwards;
 }
 
-.animate-fade-in {
-  animation: fade-in 0.2s ease-out;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.25s ease-out;
-}
-
-.animate-scale-in {
-  animation: scale-in 0.2s ease-out;
-}
-
-/* ========== Modal 过渡动画 ========== */
+/* 模态框动画 */
 @keyframes modal-overlay-in {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -354,39 +377,52 @@ select,
 }
 
 @keyframes modal-content-in {
-  from {
-    opacity: 0;
-    transform: scale(0.92) translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
 }
 
 @keyframes modal-content-out {
-  from {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-  to {
-    opacity: 0;
-    transform: scale(0.92) translateY(16px);
-  }
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.97); }
 }
 
 .modal-overlay-enter {
-  animation: modal-overlay-in 0.2s ease-out forwards;
+  animation: modal-overlay-in 0.12s ease-out forwards;
 }
 
 .modal-overlay-exit {
-  animation: modal-overlay-out 0.15s ease-in forwards;
+  animation: modal-overlay-out 0.1s ease-in forwards;
 }
 
 .modal-content-enter {
-  animation: modal-content-in 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: modal-content-in 0.12s ease-out forwards;
 }
 
 .modal-content-exit {
-  animation: modal-content-out 0.15s ease-in forwards;
+  animation: modal-content-out 0.1s ease-in forwards;
+}
+
+/* ============================================
+   侧边栏 — 微信风格图标导航
+   ============================================ */
+
+/* 容器宽度过渡 */
+.sidebar {
+  transition: width 0.15s ease;
+}
+
+/* 文字标签淡入淡出 */
+.sidebar-label {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.sidebar:hover .sidebar-label {
+  opacity: 1;
+  transition: opacity 0.12s ease 0.05s;
+}
+
+/* 侧边栏按钮项 */
+.sidebar-item {
+  transition: background-color 0.1s, border-color 0.1s, color 0.1s;
 }

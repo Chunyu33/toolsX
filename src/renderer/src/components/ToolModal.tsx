@@ -23,30 +23,18 @@ type Phase = 'closed' | 'enter' | 'idle' | 'exit'
 export default function ToolModal({ toolId, open, onClose }: Props) {
   const tool = useMemo(() => tools.find((t) => t.id === toolId), [toolId])
 
-  // 说明：内部状态机管理 modal 的挂载与动画阶段
   const [phase, setPhase] = useState<Phase>('closed')
   const contentRef = useRef<HTMLDivElement | null>(null)
 
-  // 入场：open 变为 true 时挂载并播放入场动画
   useEffect(() => {
-    if (open && phase === 'closed') {
-      setPhase('enter')
-    }
+    if (open && phase === 'closed') setPhase('enter')
   }, [open, phase])
 
-  // 入场动画结束后进入 idle
   const handleContentAnimEnd = useCallback(() => {
-    if (phase === 'enter') {
-      setPhase('idle')
-    }
-    // 出场动画结束后真正卸载并通知父组件
-    if (phase === 'exit') {
-      setPhase('closed')
-      onClose()
-    }
+    if (phase === 'enter') setPhase('idle')
+    if (phase === 'exit') { setPhase('closed'); onClose() }
   }, [phase, onClose])
 
-  // 关闭：先播放出场动画
   const handleClose = useCallback(() => {
     if (phase === 'closed' || phase === 'exit') return
     setPhase('exit')
@@ -58,12 +46,9 @@ export default function ToolModal({ toolId, open, onClose }: Props) {
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
-      // 说明：输入框内按 ESC 不关闭弹窗，避免误操作
       const t = e.target as HTMLElement | null
       const tag = t?.tagName?.toLowerCase()
-      const isTypingTarget =
-        tag === 'input' || tag === 'textarea' || tag === 'select' || Boolean((t as HTMLElement | null)?.isContentEditable)
-      if (isTypingTarget) return
+      if (tag === 'input' || tag === 'textarea' || tag === 'select' || Boolean((t as HTMLElement | null)?.isContentEditable)) return
 
       e.preventDefault()
       handleClose()
@@ -75,43 +60,30 @@ export default function ToolModal({ toolId, open, onClose }: Props) {
 
   if (phase === 'closed') return null
 
-  const overlayClass =
-    phase === 'exit' ? 'modal-overlay-exit' : 'modal-overlay-enter'
-  const contentClass =
-    phase === 'exit' ? 'modal-content-exit' : 'modal-content-enter'
+  const overlayClass = phase === 'exit' ? 'modal-overlay-exit' : 'modal-overlay-enter'
+  const contentClass = phase === 'exit' ? 'modal-content-exit' : 'modal-content-enter'
 
   return (
     <div className="fixed inset-0 z-40 flex items-center justify-center">
-      {/* 遮罩 */}
       <div
-        className={`absolute inset-0 bg-black/60 backdrop-blur-sm ${overlayClass}`}
+        className={`absolute inset-0 bg-black/40 ${overlayClass}`}
         onClick={handleClose}
       />
 
-      {/* 弹窗内容 */}
       <div
         ref={contentRef}
-        className={`relative z-10 flex h-[92vh] w-[95vw] max-w-7xl flex-col overflow-hidden rounded-2xl border border-app-border/50 bg-app-surface shadow-2xl ${contentClass}`}
+        className={`relative z-10 flex h-[90vh] w-[96vw] max-w-6xl flex-col overflow-hidden rounded-sm border border-app-border bg-white ${contentClass}`}
         onAnimationEnd={handleContentAnimEnd}
       >
-        {/* 标题栏 */}
-        <div className="flex shrink-0 items-center justify-between border-b border-app-border/40 px-5 py-3">
-          <div>
-            <div className="text-base font-semibold text-app-text">{tool?.title ?? '工具'}</div>
-            {tool?.description ? (
-              <div className="mt-0.5 text-xs text-app-muted/70">{tool.description}</div>
-            ) : null}
-          </div>
-
-          <button
-            className="rounded-lg p-2 text-app-muted/70 transition-colors hover:bg-app-surface2 hover:text-app-text"
-            onClick={handleClose}
-            title="关闭 (Esc)"
-            type="button"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
+        {/* 关闭按钮 */}
+        <button
+          className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-sm text-app-muted hover:bg-app-surface2 hover:text-app-text"
+          onClick={handleClose}
+          title="关闭 (Esc)"
+          type="button"
+        >
+          <X className="h-4 w-4" strokeWidth={1.5} />
+        </button>
 
         {/* 工具内容 */}
         <div key={toolId} className="min-h-0 flex-1 overflow-y-auto">
@@ -136,10 +108,10 @@ export default function ToolModal({ toolId, open, onClose }: Props) {
           ) : toolId === 'json-formatter' ? (
             <JsonFormatterPage />
           ) : (
-            <div className="mx-auto max-w-5xl px-6 py-6">
-              <div className="rounded-xl border border-app-border bg-app-surface p-6 shadow-sm">
-                <div className="text-lg font-semibold text-app-text">{tool?.title ?? '未找到该工具'}</div>
-                <div className="mt-2 text-sm text-app-muted">{tool?.description ?? '请返回首页选择工具。'}</div>
+            <div className="p-6">
+              <div className="rounded-sm border border-app-border bg-white p-4">
+                <div className="text-sm font-medium text-app-text">{tool?.title ?? '未找到该工具'}</div>
+                <div className="mt-1 text-xs text-app-muted">{tool?.description ?? '请返回首页选择工具。'}</div>
               </div>
             </div>
           )}

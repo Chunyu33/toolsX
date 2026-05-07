@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Clipboard, Info, Laptop, Loader2, Moon, MessageCircle, Settings, Sun, X } from 'lucide-react'
-import { getStoredThemeMode, setStoredThemeMode, type ThemeMode } from '../theme/theme'
+import { applyThemeClass, getStoredThemeMode, setStoredThemeMode, type ThemeMode } from '../theme/theme'
 import Toast from './Toast'
 
 type Props = {
@@ -33,8 +33,8 @@ function ThemeChip({ value, current, onSelect }: { value: ThemeMode; current: Th
     <button
       className={
         active
-          ? 'inline-flex items-center gap-2 rounded-lg border border-brand-300 bg-brand-50 px-3 py-2 text-sm text-app-text'
-          : 'inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2'
+          ? 'inline-flex items-center gap-2 rounded-sm border border-brand-500 bg-brand-50 px-3 py-1.5 text-sm text-brand-500'
+          : 'inline-flex items-center gap-2 rounded-sm border border-app-border bg-app-surface px-3 py-1.5 text-sm text-app-text hover:bg-app-surface2'
       }
       onClick={() => onSelect(value)}
       type="button"
@@ -72,10 +72,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
   const setMode = (mode: ThemeMode) => {
     setThemeMode(mode)
     setStoredThemeMode(mode)
-    document.documentElement.classList.toggle(
-      'dark',
-      mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    )
+    applyThemeClass(mode)
   }
 
   useEffect(() => {
@@ -110,7 +107,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
         <button
           className={
             triggerClassName ??
-            'no-drag inline-flex h-9 w-9 items-center justify-center rounded-lg border border-app-border bg-app-surface text-app-text hover:bg-app-surface2'
+            'no-drag inline-flex h-8 w-8 items-center justify-center rounded-sm border border-app-border bg-app-surface text-app-text hover:bg-app-surface2'
           }
           title="设置"
         >
@@ -120,7 +117,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/40" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 h-[78vh] w-[92vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border border-app-border bg-app-surface shadow-app">
+        <Dialog.Content className="fixed left-1/2 top-1/2 h-[78vh] w-[92vw] max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-sm border border-app-border bg-app-surface">
           <div className="flex h-full">
             <div className="w-[220px] border-r border-app-border bg-app-surface2 p-3">
               <div className="px-2 py-2 text-sm font-semibold text-app-text">设置</div>
@@ -131,8 +128,8 @@ export default function SettingsModal({ triggerClassName }: Props) {
                   onClick={() => setNav('general')}
                   className={
                     nav === 'general'
-                      ? 'flex w-full items-center gap-2 rounded-lg bg-app-surface px-3 py-2 text-sm text-app-text ring-1 ring-brand-300/50'
-                      : 'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-app-text hover:bg-app-surface'
+                      ? 'flex w-full items-center gap-2 rounded-sm bg-app-surface px-3 py-2 text-sm text-app-text border border-brand-500'
+                      : 'flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-app-text hover:bg-app-surface'
                   }
                 >
                   <Settings className={nav === 'general' ? 'h-4 w-4 text-brand-600' : 'h-4 w-4 text-app-muted'} />
@@ -144,8 +141,8 @@ export default function SettingsModal({ triggerClassName }: Props) {
                   onClick={() => setNav('feedback')}
                   className={
                     nav === 'feedback'
-                      ? 'flex w-full items-center gap-2 rounded-lg bg-app-surface px-3 py-2 text-sm text-app-text ring-1 ring-brand-300/50'
-                      : 'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-app-text hover:bg-app-surface'
+                      ? 'flex w-full items-center gap-2 rounded-sm bg-app-surface px-3 py-2 text-sm text-app-text border border-brand-500'
+                      : 'flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-app-text hover:bg-app-surface'
                   }
                 >
                   <MessageCircle className={nav === 'feedback' ? 'h-4 w-4 text-brand-600' : 'h-4 w-4 text-app-muted'} />
@@ -157,8 +154,8 @@ export default function SettingsModal({ triggerClassName }: Props) {
                   onClick={() => setNav('about')}
                   className={
                     nav === 'about'
-                      ? 'flex w-full items-center gap-2 rounded-lg bg-app-surface px-3 py-2 text-sm text-app-text ring-1 ring-brand-300/50'
-                      : 'flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-app-text hover:bg-app-surface'
+                      ? 'flex w-full items-center gap-2 rounded-sm bg-app-surface px-3 py-2 text-sm text-app-text border border-brand-500'
+                      : 'flex w-full items-center gap-2 rounded-sm px-3 py-2 text-sm text-app-text hover:bg-app-surface'
                   }
                 >
                   <Info className={nav === 'about' ? 'h-4 w-4 text-brand-600' : 'h-4 w-4 text-app-muted'} />
@@ -171,8 +168,8 @@ export default function SettingsModal({ triggerClassName }: Props) {
               <div className="flex items-center justify-between px-5 pt-5">
                 <Dialog.Title className="text-base font-semibold text-app-text">{title}</Dialog.Title>
                 <Dialog.Close asChild>
-                  <button className="rounded-lg border border-app-border bg-app-surface px-2 py-2 text-sm text-app-text hover:bg-app-surface2">
-                    <X className="h-4 w-4" />
+                  <button className="flex h-7 w-7 items-center justify-center rounded-sm text-app-muted hover:bg-app-surface2 hover:text-app-text">
+                    <X className="h-4 w-4" strokeWidth={1.5} />
                   </button>
                 </Dialog.Close>
               </div>
@@ -180,7 +177,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
               <div className="min-h-0 flex-1 overflow-auto px-5 pb-5">
                 {nav === 'general' ? (
                   <div key={nav} className="panel-enter mt-4 space-y-4">
-                    <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    <div className="rounded-sm border border-app-border bg-app-surface p-4">
                       <div className="text-sm font-semibold text-app-text">外观</div>
                       <div className="mt-1 text-xs text-app-muted">选择亮色/暗色或跟随系统</div>
 
@@ -191,7 +188,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       </div>
                     </div>
 
-                    <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    <div className="rounded-sm border border-app-border bg-app-surface p-4">
                       <div className="text-sm font-semibold text-app-text">临时文件</div>
                       <div className="mt-1 text-xs text-app-muted">
                         清理系统临时目录下由 ToolsX 生成的临时文件（仅清理 toolsx-*，主进程会做严格白名单校验）。
@@ -199,7 +196,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
 
                       <div className="mt-3">
                         <button
-                          className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+                          className="btn-secondary"
                           disabled={cleanupBusy}
                           onClick={async () => {
                             setCleanupBusy(true)
@@ -220,14 +217,14 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       </div>
                     </div>
 
-                    {/* <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    {/* <div className="rounded-sm border border-app-border bg-app-surface p-4">
                       <div className="text-sm font-semibold text-app-text">预留区域</div>
                       <div className="mt-1 text-xs text-app-muted">后续可添加快捷键、语言、启动项等设置</div>
                     </div> */}
                   </div>
                 ) : nav === 'about' ? (
                   <div key={nav} className="panel-enter mt-4 space-y-4">
-                    <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    <div className="rounded-sm border border-app-border bg-app-surface p-4">
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="text-sm font-semibold text-app-text">版本信息</div>
@@ -235,7 +232,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                         </div>
 
                         <button
-                          className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2 disabled:opacity-60"
+                          className="btn-secondary"
                           disabled={updateLoading}
                           onClick={async () => {
                             setUpdateBusy(true)
@@ -274,7 +271,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       {updaterStatus.status === 'available' ? (
                         <div className="mt-3 flex items-center gap-2">
                           <button
-                            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700 disabled:opacity-60"
+                            className="btn-primary"
                             disabled={updateLoading}
                             onClick={async () => {
                               setUpdateBusy(true)
@@ -295,9 +292,9 @@ export default function SettingsModal({ triggerClassName }: Props) {
 
                       {updaterStatus.status === 'downloading' ? (
                         <div className="mt-3">
-                          <div className="h-2 overflow-hidden rounded-full bg-app-surface2">
+                          <div className="h-2 overflow-hidden rounded-sm bg-app-surface2">
                             <div
-                              className="h-2 rounded-full bg-brand-600"
+                              className="h-2 rounded-sm bg-brand-600"
                               style={{ width: `${Math.max(0, Math.min(100, updaterStatus.percent))}%` }}
                             />
                           </div>
@@ -307,7 +304,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                       {updaterStatus.status === 'downloaded' ? (
                         <div className="mt-3 flex items-center gap-2">
                           <button
-                            className="inline-flex items-center gap-2 rounded-lg bg-brand-600 px-3 py-2 text-sm text-white hover:bg-brand-700"
+                            className="btn-primary"
                             onClick={() => window.toolsx.updater.quitAndInstall()}
                             type="button"
                           >
@@ -319,23 +316,21 @@ export default function SettingsModal({ triggerClassName }: Props) {
                   </div>
                 ) : (
                   <div key={nav} className="panel-enter mt-4 space-y-4">
-                    <div className="rounded-xl border border-app-border bg-app-surface p-4">
+                    <div className="rounded-sm border border-app-border bg-app-surface p-4">
                       <div className="text-sm font-semibold text-app-text">联系作者</div>
                       <div className="mt-1 text-xs text-app-muted">欢迎提交建议与问题反馈</div>
 
                       <div className="mt-4 space-y-2">
                         {[
                           { label: '邮箱', value: '1378813463@qq.com' },
-                          { label: '微信', value: 'B_HH6050' },
-                          { label: 'QQ', value: '1378813463' }
                         ].map((it) => (
-                          <div key={it.label} className="flex items-center justify-between gap-3 rounded-lg border border-app-border bg-app-surface2 px-3 py-2">
+                          <div key={it.label} className="flex items-center justify-between gap-3 rounded-sm border border-app-border bg-app-surface2 px-3 py-2">
                             <div className="min-w-0">
                               <div className="text-xs text-app-muted">{it.label}</div>
                               <div className="select-text truncate text-sm text-app-text">{it.value}</div>
                             </div>
                             <button
-                              className="inline-flex items-center gap-2 rounded-lg border border-app-border bg-app-surface px-3 py-2 text-sm text-app-text hover:bg-app-surface2"
+                              className="btn-secondary text-xs px-3 py-1.5"
                               onClick={async () => {
                                 try {
                                   await window.toolsx.system.copyText(it.value)
@@ -346,7 +341,7 @@ export default function SettingsModal({ triggerClassName }: Props) {
                               }}
                               type="button"
                             >
-                              <Clipboard className="h-4 w-4" />
+                              <Clipboard className="h-3.5 w-3.5" />
                               复制
                             </button>
                           </div>

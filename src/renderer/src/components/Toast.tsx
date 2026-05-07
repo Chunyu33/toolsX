@@ -17,8 +17,8 @@ export default function Toast(props: {
   if (!open) return null
 
   return (
-    <div className="fixed top-6 left-1/2 z-50 -translate-x-1/2">
-      <div className="rounded-xl border border-app-border bg-app-surface px-4 py-2 text-sm text-app-text shadow-xl">
+    <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2">
+      <div className="rounded-sm bg-[#1A1A1A] px-4 py-2 text-xs text-white">
         {message}
       </div>
     </div>

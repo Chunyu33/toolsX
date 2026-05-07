@@ -9,26 +9,40 @@ module.exports = {
     extend: {
       colors: {
         app: {
-          bg: 'hsl(var(--app-bg))',
-          surface: 'hsl(var(--app-surface))',
-          surface2: 'hsl(var(--app-surface-2))',
-          border: 'hsl(var(--app-border))',
-          text: 'hsl(var(--app-text))',
-          muted: 'hsl(var(--app-muted))'
+          bg: 'rgb(var(--app-bg) / <alpha-value>)',
+          surface: 'rgb(var(--app-surface) / <alpha-value>)',
+          surface2: 'rgb(var(--app-surface2) / <alpha-value>)',
+          border: 'rgb(var(--app-border) / <alpha-value>)',
+          text: 'rgb(var(--app-text) / <alpha-value>)',
+          muted: 'rgb(var(--app-muted) / <alpha-value>)'
         },
         brand: {
-          50: 'hsl(var(--brand-50))',
-          100: 'hsl(var(--brand-100))',
-          200: 'hsl(var(--brand-200))',
-          300: 'hsl(var(--brand-300))',
-          400: 'hsl(var(--brand-400))',
-          500: 'hsl(var(--brand-500))',
-          600: 'hsl(var(--brand-600))',
-          700: 'hsl(var(--brand-700))'
+          50: 'rgb(var(--brand-50) / <alpha-value>)',
+          100: 'rgb(var(--brand-100) / <alpha-value>)',
+          200: 'rgb(var(--brand-200) / <alpha-value>)',
+          300: 'rgb(var(--brand-300) / <alpha-value>)',
+          400: 'rgb(var(--brand-400) / <alpha-value>)',
+          500: 'rgb(var(--brand-500) / <alpha-value>)',
+          600: 'rgb(var(--brand-600) / <alpha-value>)',
+          700: 'rgb(var(--brand-700) / <alpha-value>)'
         }
       },
+      borderRadius: {
+        DEFAULT: '8px',
+        sm: '4px',
+        md: '8px',
+        lg: '8px',
+        xl: '8px',
+        '2xl': '8px'
+      },
       boxShadow: {
-        app: '0 20px 60px rgba(0,0,0,.35)'
+        DEFAULT: 'none',
+        sm: 'none',
+        md: 'none',
+        lg: 'none',
+        xl: 'none',
+        '2xl': 'none',
+        app: 'none'
       }
     }
   },

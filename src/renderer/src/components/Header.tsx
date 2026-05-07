@@ -1,16 +1,8 @@
-import type { ChangeEvent } from 'react'
 import { useEffect, useState } from 'react'
-import { Maximize2, Minus, Search, X } from 'lucide-react'
 import SettingsModal from './SettingsModal'
 import appLogo from '../../../assets/app.png'
 
-type Props = {
-  title: string
-  onSearchChange?: (value: string) => void
-}
-
-export default function Header({ title, onSearchChange }: Props) {
-  const [search, setSearch] = useState('')
+export default function Header() {
   const [isMax, setIsMax] = useState(false)
 
   useEffect(() => {
@@ -29,72 +21,50 @@ export default function Header({ title, onSearchChange }: Props) {
   }, [])
 
   return (
-    <div className="sticky top-0 z-20 border-b border-app-border/50 bg-app-surface/70 backdrop-blur-xl">
-      <div className="titlebar flex h-12 items-center">
-        <div className="flex items-center gap-2.5 pl-4 pr-2">
-          <img src={appLogo} className="h-7 w-7 rounded-lg shadow-sm ring-1 ring-brand-300/30" draggable={false} />
-          <div className="text-sm font-semibold tracking-wide text-app-text">ToolsX</div>
+    <div className="sticky top-0 z-20 border-b border-app-border bg-app-surface">
+      <div className="titlebar flex h-9 items-center">
+        {/* Logo + 标题 */}
+        <div className="flex items-center gap-2 pl-3 pr-2">
+          <img src={appLogo} className="h-4 w-4 rounded-sm" draggable={false} />
+          <div className="text-[13px] font-medium text-app-text">ToolsX</div>
         </div>
 
-        <div className="flex-1" title={title} />
+        <div className="flex-1" />
 
-        <div className="flex items-center gap-3 px-3">
-          <div className="relative hidden w-[280px] sm:block">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-app-muted/70" />
-            <input
-              value={search}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                const v = e.currentTarget.value
-                setSearch(v)
-                onSearchChange?.(v)
-              }}
-              placeholder="搜索工具..."
-              className="w-full rounded-xl border border-app-border/60 bg-app-surface2/80 px-9 py-1.5 text-sm text-app-text shadow-sm outline-none transition-all duration-150 placeholder:text-app-muted/60 focus:border-brand-300 focus:bg-app-surface focus:shadow-md focus:ring-2 focus:ring-brand-200/30"
-            />
-
-            {search.trim() ? (
-              <button
-                type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg p-1 text-app-muted/70 transition-colors hover:bg-app-surface hover:text-app-text"
-                title="清除"
-                onClick={() => {
-                  setSearch('')
-                  onSearchChange?.('')
-                }}
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            ) : null}
-          </div>
-
+        {/* 设置 */}
+        <div className="flex items-center gap-1 pr-1">
           <SettingsModal />
         </div>
 
-        <div className="flex h-12 w-[138px] items-stretch justify-end">
+        {/* 窗口控制 — 统一字号和宽度的文字图标 */}
+        <div className="flex h-9 items-stretch justify-end">
           <button
-            className="flex w-[46px] items-center justify-center text-app-muted/80 transition-colors hover:bg-app-surface2/80 hover:text-app-text"
+            className="flex w-[34px] items-center justify-center text-[13px] text-app-muted leading-none hover:bg-app-surface2 hover:text-app-text"
             onClick={() => window.toolsx.windowControls.minimize()}
             title="最小化"
+            type="button"
           >
-            <Minus className="h-4 w-4" />
+            &#x2500;
           </button>
           <button
-            className="flex w-[46px] items-center justify-center text-app-muted/80 transition-colors hover:bg-app-surface2/80 hover:text-app-text"
+            className="flex w-[34px] items-center justify-center text-[13px] text-app-muted leading-none hover:bg-app-surface2 hover:text-app-text"
             onClick={async () => {
               await window.toolsx.windowControls.toggleMaximize()
               const v = await window.toolsx.windowControls.isMaximized()
               setIsMax(v)
             }}
             title={isMax ? '还原' : '最大化'}
+            type="button"
           >
-            <Maximize2 className={isMax ? 'h-4 w-4 text-brand-500' : 'h-4 w-4'} />
+            {isMax ? '⧉' : '□'}
           </button>
           <button
-            className="flex w-[46px] items-center justify-center text-app-muted/80 transition-colors hover:bg-red-500/90 hover:text-white"
+            className="flex w-[34px] items-center justify-center text-[13px] text-app-muted leading-none hover:bg-[#FA5151] hover:text-white"
             onClick={() => window.toolsx.windowControls.close()}
             title="关闭"
+            type="button"
           >
-            <X className="h-4 w-4" />
+            &times;
           </button>
         </div>
       </div>

@@ -1,43 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <!-- 背景渐变：浅绿色，与品牌色协调 -->
+    <!-- 品牌绿色渐变背景 -->
     <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#a3e635"/>
-      <stop offset="35%" style="stop-color:#86efac"/>
-      <stop offset="70%" style="stop-color:#4ade80"/>
-      <stop offset="100%" style="stop-color:#22c55e"/>
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="40%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#16a34a"/>
     </linearGradient>
 
-    <!-- 图标渐变：白色到浅绿 -->
-    <linearGradient id="iconGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" style="stop-color:#ffffff"/>
-      <stop offset="100%" style="stop-color:#f0fdf4"/>
-    </linearGradient>
-
-    <!-- 扳手透明区域遮罩 -->
-    <mask id="wrenchMask">
+    <!-- 齿轮齿形遮罩 -->
+    <mask id="gearMask">
       <rect width="512" height="512" fill="white"/>
-      <!-- 扳手头部内圆孔（螺栓位置） -->
-      <circle cx="256" cy="205" r="30" fill="black"/>
-      <!-- 底部开口（钳口） -->
-      <rect x="246" y="230" width="20" height="42" rx="10" fill="black"/>
+      <!-- 12 个三角形缺口围成一圈，形成齿轮轮廓 -->
+      <g fill="black">
+        <polygon points="256,56 226,98 286,98" />
+        <polygon points="399,95 390,146 354,105" />
+        <polygon points="456,256 414,226 414,286" />
+        <polygon points="417,399 366,390 407,354" />
+        <polygon points="256,456 226,414 286,414" />
+        <polygon points="113,399 122,348 158,389" />
+        <polygon points="56,256 98,226 98,286" />
+        <polygon points="113,113 164,122 123,158" />
+      </g>
     </mask>
   </defs>
 
   <!-- 圆角方形背景 -->
   <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
 
-  <!-- 扳手图标 -->
-  <g mask="url(#wrenchMask)">
-    <!-- 扳手头部外圆 -->
-    <circle cx="256" cy="205" r="62" fill="url(#iconGrad)"/>
+  <!-- 白色齿轮主体 -->
+  <circle cx="256" cy="256" r="175" fill="white" mask="url(#gearMask)"/>
 
-    <!-- 手柄（从头部下方延伸） -->
-    <rect x="236" y="250" width="40" height="160" rx="20" fill="url(#iconGrad)"/>
+  <!-- 齿轮内圈 — 绿色 -->
+  <circle cx="256" cy="256" r="65" fill="url(#bgGrad)"/>
 
-    <!-- 手柄防滑纹路 -->
-    <rect x="240" y="270" width="32" height="10" rx="5" fill="rgba(34,197,94,0.18)"/>
-    <rect x="240" y="292" width="32" height="10" rx="5" fill="rgba(34,197,94,0.18)"/>
-    <rect x="240" y="314" width="32" height="10" rx="5" fill="rgba(34,197,94,0.18)"/>
-  </g>
+  <!-- 中心六角星形（暗示"多功能/多面手"） -->
+  <polygon
+    points="256,176 286,206 256,236 226,206"
+    fill="none" stroke="white" stroke-width="14"
+    stroke-linecap="round" stroke-linejoin="round"
+  />
+
+  <!-- 中心圆点 -->
+  <circle cx="256" cy="256" r="12" fill="white"/>
 </svg>

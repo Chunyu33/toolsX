@@ -9,10 +9,10 @@ export default function LoadingOverlay({ open, text }: Props) {
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="flex items-center gap-3 rounded-xl border border-app-border bg-app-surface px-4 py-3 shadow-app">
-        <Loader2 className="h-4 w-4 animate-spin text-brand-600" />
-        <div className="text-sm text-app-text">{text ?? '处理中...'}</div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20">
+      <div className="flex items-center gap-2 rounded-sm bg-app-surface px-4 py-2.5">
+        <Loader2 className="h-3.5 w-3.5 animate-spin text-brand-500" />
+        <div className="text-xs text-app-text">{text ?? '处理中...'}</div>
       </div>
     </div>
   )
