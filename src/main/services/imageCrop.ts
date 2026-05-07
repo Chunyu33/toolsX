@@ -2,6 +2,7 @@ import { app } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'node:module'
+import { isHeifFile, formatSharpError } from '../utils/imageFormat'
 
 export type CornerFlags = {
   tl: boolean
@@ -85,10 +86,20 @@ function buildRoundedRectSvg(args: { width: number; height: number; radius: numb
 export async function cropImage(args: ImageCropArgs): Promise<ImageCropResult> {
   if (!args.inputPath) throw new Error('缺少输入图片')
 
+  // HEIF/HEIC 前置拦截：sharp 无法可靠解码 HEIF，且报错对用户极不友好
+  if (await isHeifFile(args.inputPath)) {
+    throw new Error('不支持 HEIF/HEIC 格式图片。iPhone 照片请先将格式改为"兼容性最佳"后重新拍摄/导出，或使用其他工具转换为 JPG/PNG 后再试。')
+  }
+
   const sharp = getSharp()
 
   // 说明：先读取元信息，用于把裁剪区域限制在图像边界内
-  const meta = await sharp(args.inputPath).metadata()
+  let meta: { width?: number; height?: number }
+  try {
+    meta = await sharp(args.inputPath).metadata()
+  } catch (e) {
+    throw new Error(formatSharpError(e))
+  }
   const iw = meta.width ?? 0
   const ih = meta.height ?? 0
   if (iw <= 0 || ih <= 0) throw new Error('无法读取图片尺寸')
@@ -101,20 +112,24 @@ export async function cropImage(args: ImageCropArgs): Promise<ImageCropResult> {
   const radius = clampInt(args.round?.radius ?? 0, 0, Math.floor(Math.min(w, h) / 2))
   const corners = normalizeCorners(args.round?.corners)
 
-  let pipeline = sharp(args.inputPath)
-    // 说明：extract 是真正的像素级裁剪，避免 renderer 侧用 canvas 导出带来的质量/色彩空间问题
-    .extract({ left: x, top: y, width: w, height: h })
-    // 说明：统一转成 RGBA，方便后续做透明圆角（尤其是 JPEG 输入没有 alpha）
-    .ensureAlpha()
+  try {
+    let pipeline = sharp(args.inputPath)
+      // 说明：extract 是真正的像素级裁剪，避免 renderer 侧用 canvas 导出带来的质量/色彩空间问题
+      .extract({ left: x, top: y, width: w, height: h })
+      // 说明：统一转成 RGBA，方便后续做透明圆角（尤其是 JPEG 输入没有 alpha）
+      .ensureAlpha()
 
-  if (radius > 0 && (corners.tl || corners.tr || corners.br || corners.bl)) {
-    const mask = buildRoundedRectSvg({ width: w, height: h, radius, corners })
-    pipeline = pipeline.composite([{ input: mask, blend: 'dest-in' }])
+    if (radius > 0 && (corners.tl || corners.tr || corners.br || corners.bl)) {
+      const mask = buildRoundedRectSvg({ width: w, height: h, radius, corners })
+      pipeline = pipeline.composite([{ input: mask, blend: 'dest-in' }])
+    }
+
+    const tmpDir = await fs.mkdtemp(path.join(app.getPath('temp'), 'toolsx-crop-'))
+    const outPath = path.join(tmpDir, 'cropped.png')
+    await pipeline.png().toFile(outPath)
+
+    return { outputPath: outPath, tempDir: tmpDir, width: w, height: h }
+  } catch (e) {
+    throw new Error(formatSharpError(e))
   }
-
-  const tmpDir = await fs.mkdtemp(path.join(app.getPath('temp'), 'toolsx-crop-'))
-  const outPath = path.join(tmpDir, 'cropped.png')
-  await pipeline.png().toFile(outPath)
-
-  return { outputPath: outPath, tempDir: tmpDir, width: w, height: h }
 }

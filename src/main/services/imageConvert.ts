@@ -2,6 +2,7 @@ import { app } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'
 import { createRequire } from 'node:module'
+import { isHeifFile, formatSharpError } from '../utils/imageFormat'
 
 export type ImageOutputFormat = 'png' | 'jpeg' | 'webp' | 'avif' | 'gif' | 'ico'
 
@@ -79,9 +80,14 @@ async function renderToBuffer(args: { inputPath: string; format: ImageOutputForm
   const q = clampQuality(args.quality)
 
   if (isIcoInput(args.inputPath) && args.format !== 'ico') {
-    // 说明：这类错误如果直接抛 sharp 的原始报错，用户只会看到“unsupported image format”，体验很差。
+    // 说明：这类错误如果直接抛 sharp 的原始报错，用户只会看到”unsupported image format”，体验很差。
     // 这里做前置拦截，给出可理解的提示。
     throw new Error('暂不支持将 ICO 作为输入转换为其它格式（当前仅支持输出 ICO）。请换用 PNG/JPG/WebP 等作为输入，或先用其它工具把 ICO 导出为 PNG 后再转换。')
+  }
+
+  // HEIF/HEIC 前置拦截：文件扩展名可能为 .jpg 但内部是 HEIF，此时 sharp 报错极不友好
+  if (await isHeifFile(args.inputPath)) {
+    throw new Error('不支持 HEIF/HEIC 格式图片。iPhone 照片请先将格式改为”兼容性最佳”后重新拍摄/导出，或使用其他工具转换为 JPG/PNG 后再试。')
   }
 
   if (args.format === 'ico') {
@@ -90,32 +96,40 @@ async function renderToBuffer(args: { inputPath: string; format: ImageOutputForm
     const buffers: Buffer[] = []
 
     for (const s of sizes) {
-      const b = await sharp(args.inputPath)
-        .resize(s, s, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-        .png()
-        .toBuffer()
-      buffers.push(b)
+      try {
+        const b = await sharp(args.inputPath)
+          .resize(s, s, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+          .png()
+          .toBuffer()
+        buffers.push(b)
+      } catch (e) {
+        throw new Error(formatSharpError(e))
+      }
     }
 
     const icoBuffer: Buffer = await pngToIco(buffers)
     return icoBuffer
   }
 
-  let pipeline = sharp(args.inputPath)
+  try {
+    let pipeline = sharp(args.inputPath)
 
-  if (args.format === 'png') {
-    pipeline = pipeline.png()
-  } else if (args.format === 'jpeg') {
-    pipeline = pipeline.jpeg({ quality: q })
-  } else if (args.format === 'webp') {
-    pipeline = pipeline.webp({ quality: q })
-  } else if (args.format === 'gif') {
-    pipeline = pipeline.gif()
-  } else {
-    pipeline = pipeline.avif({ quality: q })
+    if (args.format === 'png') {
+      pipeline = pipeline.png()
+    } else if (args.format === 'jpeg') {
+      pipeline = pipeline.jpeg({ quality: q })
+    } else if (args.format === 'webp') {
+      pipeline = pipeline.webp({ quality: q })
+    } else if (args.format === 'gif') {
+      pipeline = pipeline.gif()
+    } else {
+      pipeline = pipeline.avif({ quality: q })
+    }
+
+    return await pipeline.toBuffer()
+  } catch (e) {
+    throw new Error(formatSharpError(e))
   }
-
-  return await pipeline.toBuffer()
 }
 
 async function writeOutput(tmpDir: string, format: ImageOutputFormat, buffer: Buffer): Promise<string> {
